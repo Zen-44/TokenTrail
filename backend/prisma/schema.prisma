@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Festival {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime         @default(now())
+  token       Token?
+  missions    Mission[]
+  photos      FestivalPhoto[]
+}
+
+model Token {
+  id          Int      @id @default(autoincrement())
+  festival    Festival @relation(fields: [festivalId], references: [id])
+  festivalId  Int      @unique
+  mintAddress String   @unique
+  symbol      String
+  decimals    Int      @default(9)
+  supply      BigInt   @default(0)
+}
+
+model Mission {
+  id          Int      @id @default(autoincrement())
+  festival    Festival @relation(fields: [festivalId], references: [id])
+  festivalId  Int
+  title       String
+  description String?
+  rewardAmount BigInt
+  createdAt   DateTime @default(now())
+}
+
+model FestivalPhoto {
+  id          Int      @id @default(autoincrement())
+  festival    Festival @relation(fields: [festivalId], references: [id])
+  festivalId  Int
+  url         String
+  uploadedAt  DateTime @default(now())
+}
