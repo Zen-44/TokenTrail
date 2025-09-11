@@ -33,6 +33,11 @@ export type Mission = $Result.DefaultSelection<Prisma.$MissionPayload>
  * 
  */
 export type FestivalPhoto = $Result.DefaultSelection<Prisma.$FestivalPhotoPayload>
+/**
+ * Model MissionPhoto
+ * 
+ */
+export type MissionPhoto = $Result.DefaultSelection<Prisma.$MissionPhotoPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -191,6 +196,16 @@ export class PrismaClient<
     * ```
     */
   get festivalPhoto(): Prisma.FestivalPhotoDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.missionPhoto`: Exposes CRUD operations for the **MissionPhoto** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MissionPhotos
+    * const missionPhotos = await prisma.missionPhoto.findMany()
+    * ```
+    */
+  get missionPhoto(): Prisma.MissionPhotoDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -249,8 +264,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.15.0
-   * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+   * Prisma Client JS version: 6.16.0
+   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
    */
   export type PrismaVersion = {
     client: string
@@ -634,7 +649,8 @@ export namespace Prisma {
     Festival: 'Festival',
     Token: 'Token',
     Mission: 'Mission',
-    FestivalPhoto: 'FestivalPhoto'
+    FestivalPhoto: 'FestivalPhoto',
+    MissionPhoto: 'MissionPhoto'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -653,7 +669,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "festival" | "token" | "mission" | "festivalPhoto"
+      modelProps: "festival" | "token" | "mission" | "festivalPhoto" | "missionPhoto"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -953,6 +969,80 @@ export namespace Prisma {
           }
         }
       }
+      MissionPhoto: {
+        payload: Prisma.$MissionPhotoPayload<ExtArgs>
+        fields: Prisma.MissionPhotoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MissionPhotoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MissionPhotoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>
+          }
+          findFirst: {
+            args: Prisma.MissionPhotoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MissionPhotoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>
+          }
+          findMany: {
+            args: Prisma.MissionPhotoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>[]
+          }
+          create: {
+            args: Prisma.MissionPhotoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>
+          }
+          createMany: {
+            args: Prisma.MissionPhotoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MissionPhotoCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>[]
+          }
+          delete: {
+            args: Prisma.MissionPhotoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>
+          }
+          update: {
+            args: Prisma.MissionPhotoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>
+          }
+          deleteMany: {
+            args: Prisma.MissionPhotoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MissionPhotoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MissionPhotoUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>[]
+          }
+          upsert: {
+            args: Prisma.MissionPhotoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MissionPhotoPayload>
+          }
+          aggregate: {
+            args: Prisma.MissionPhotoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMissionPhoto>
+          }
+          groupBy: {
+            args: Prisma.MissionPhotoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MissionPhotoGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MissionPhotoCountArgs<ExtArgs>
+            result: $Utils.Optional<MissionPhotoCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1029,6 +1119,10 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     */
+    adapter?: runtime.SqlDriverAdapterFactory | null
+    /**
      * Global configuration for omitting model fields by default.
      * 
      * @example
@@ -1049,6 +1143,7 @@ export namespace Prisma {
     token?: TokenOmit
     mission?: MissionOmit
     festivalPhoto?: FestivalPhotoOmit
+    missionPhoto?: MissionPhotoOmit
   }
 
   /* Types for Logging */
@@ -1161,6 +1256,37 @@ export namespace Prisma {
    */
   export type FestivalCountOutputTypeCountPhotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FestivalPhotoWhereInput
+  }
+
+
+  /**
+   * Count Type MissionCountOutputType
+   */
+
+  export type MissionCountOutputType = {
+    photos: number
+  }
+
+  export type MissionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    photos?: boolean | MissionCountOutputTypeCountPhotosArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MissionCountOutputType without action
+   */
+  export type MissionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionCountOutputType
+     */
+    select?: MissionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MissionCountOutputType without action
+   */
+  export type MissionCountOutputTypeCountPhotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MissionPhotoWhereInput
   }
 
 
@@ -2341,6 +2467,7 @@ export namespace Prisma {
     festivalId: number | null
     mintAddress: string | null
     symbol: string | null
+    name: string | null
     decimals: number | null
     supply: bigint | null
   }
@@ -2350,6 +2477,7 @@ export namespace Prisma {
     festivalId: number | null
     mintAddress: string | null
     symbol: string | null
+    name: string | null
     decimals: number | null
     supply: bigint | null
   }
@@ -2359,6 +2487,7 @@ export namespace Prisma {
     festivalId: number
     mintAddress: number
     symbol: number
+    name: number
     decimals: number
     supply: number
     _all: number
@@ -2384,6 +2513,7 @@ export namespace Prisma {
     festivalId?: true
     mintAddress?: true
     symbol?: true
+    name?: true
     decimals?: true
     supply?: true
   }
@@ -2393,6 +2523,7 @@ export namespace Prisma {
     festivalId?: true
     mintAddress?: true
     symbol?: true
+    name?: true
     decimals?: true
     supply?: true
   }
@@ -2402,6 +2533,7 @@ export namespace Prisma {
     festivalId?: true
     mintAddress?: true
     symbol?: true
+    name?: true
     decimals?: true
     supply?: true
     _all?: true
@@ -2498,6 +2630,7 @@ export namespace Prisma {
     festivalId: number
     mintAddress: string
     symbol: string
+    name: string
     decimals: number
     supply: bigint
     _count: TokenCountAggregateOutputType | null
@@ -2526,6 +2659,7 @@ export namespace Prisma {
     festivalId?: boolean
     mintAddress?: boolean
     symbol?: boolean
+    name?: boolean
     decimals?: boolean
     supply?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
@@ -2536,6 +2670,7 @@ export namespace Prisma {
     festivalId?: boolean
     mintAddress?: boolean
     symbol?: boolean
+    name?: boolean
     decimals?: boolean
     supply?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
@@ -2546,6 +2681,7 @@ export namespace Prisma {
     festivalId?: boolean
     mintAddress?: boolean
     symbol?: boolean
+    name?: boolean
     decimals?: boolean
     supply?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
@@ -2556,11 +2692,12 @@ export namespace Prisma {
     festivalId?: boolean
     mintAddress?: boolean
     symbol?: boolean
+    name?: boolean
     decimals?: boolean
     supply?: boolean
   }
 
-  export type TokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "festivalId" | "mintAddress" | "symbol" | "decimals" | "supply", ExtArgs["result"]["token"]>
+  export type TokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "festivalId" | "mintAddress" | "symbol" | "name" | "decimals" | "supply", ExtArgs["result"]["token"]>
   export type TokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
   }
@@ -2581,6 +2718,7 @@ export namespace Prisma {
       festivalId: number
       mintAddress: string
       symbol: string
+      name: string
       decimals: number
       supply: bigint
     }, ExtArgs["result"]["token"]>
@@ -3011,6 +3149,7 @@ export namespace Prisma {
     readonly festivalId: FieldRef<"Token", 'Int'>
     readonly mintAddress: FieldRef<"Token", 'String'>
     readonly symbol: FieldRef<"Token", 'String'>
+    readonly name: FieldRef<"Token", 'String'>
     readonly decimals: FieldRef<"Token", 'Int'>
     readonly supply: FieldRef<"Token", 'BigInt'>
   }
@@ -3642,6 +3781,8 @@ export namespace Prisma {
     rewardAmount?: boolean
     createdAt?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
+    photos?: boolean | Mission$photosArgs<ExtArgs>
+    _count?: boolean | MissionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mission"]>
 
   export type MissionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3676,6 +3817,8 @@ export namespace Prisma {
   export type MissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "festivalId" | "title" | "description" | "rewardAmount" | "createdAt", ExtArgs["result"]["mission"]>
   export type MissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
+    photos?: boolean | Mission$photosArgs<ExtArgs>
+    _count?: boolean | MissionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MissionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
@@ -3688,6 +3831,7 @@ export namespace Prisma {
     name: "Mission"
     objects: {
       festival: Prisma.$FestivalPayload<ExtArgs>
+      photos: Prisma.$MissionPhotoPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4091,6 +4235,7 @@ export namespace Prisma {
   export interface Prisma__MissionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     festival<T extends FestivalDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FestivalDefaultArgs<ExtArgs>>): Prisma__FestivalClient<$Result.GetResult<Prisma.$FestivalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    photos<T extends Mission$photosArgs<ExtArgs> = {}>(args?: Subset<T, Mission$photosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4522,6 +4667,30 @@ export namespace Prisma {
   }
 
   /**
+   * Mission.photos
+   */
+  export type Mission$photosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    where?: MissionPhotoWhereInput
+    orderBy?: MissionPhotoOrderByWithRelationInput | MissionPhotoOrderByWithRelationInput[]
+    cursor?: MissionPhotoWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MissionPhotoScalarFieldEnum | MissionPhotoScalarFieldEnum[]
+  }
+
+  /**
    * Mission without action
    */
   export type MissionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4565,21 +4734,21 @@ export namespace Prisma {
   export type FestivalPhotoMinAggregateOutputType = {
     id: number | null
     festivalId: number | null
-    url: string | null
+    photo: Uint8Array | null
     uploadedAt: Date | null
   }
 
   export type FestivalPhotoMaxAggregateOutputType = {
     id: number | null
     festivalId: number | null
-    url: string | null
+    photo: Uint8Array | null
     uploadedAt: Date | null
   }
 
   export type FestivalPhotoCountAggregateOutputType = {
     id: number
     festivalId: number
-    url: number
+    photo: number
     uploadedAt: number
     _all: number
   }
@@ -4598,21 +4767,21 @@ export namespace Prisma {
   export type FestivalPhotoMinAggregateInputType = {
     id?: true
     festivalId?: true
-    url?: true
+    photo?: true
     uploadedAt?: true
   }
 
   export type FestivalPhotoMaxAggregateInputType = {
     id?: true
     festivalId?: true
-    url?: true
+    photo?: true
     uploadedAt?: true
   }
 
   export type FestivalPhotoCountAggregateInputType = {
     id?: true
     festivalId?: true
-    url?: true
+    photo?: true
     uploadedAt?: true
     _all?: true
   }
@@ -4706,7 +4875,7 @@ export namespace Prisma {
   export type FestivalPhotoGroupByOutputType = {
     id: number
     festivalId: number
-    url: string
+    photo: Uint8Array
     uploadedAt: Date
     _count: FestivalPhotoCountAggregateOutputType | null
     _avg: FestivalPhotoAvgAggregateOutputType | null
@@ -4732,7 +4901,7 @@ export namespace Prisma {
   export type FestivalPhotoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     festivalId?: boolean
-    url?: boolean
+    photo?: boolean
     uploadedAt?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["festivalPhoto"]>
@@ -4740,7 +4909,7 @@ export namespace Prisma {
   export type FestivalPhotoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     festivalId?: boolean
-    url?: boolean
+    photo?: boolean
     uploadedAt?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["festivalPhoto"]>
@@ -4748,7 +4917,7 @@ export namespace Prisma {
   export type FestivalPhotoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     festivalId?: boolean
-    url?: boolean
+    photo?: boolean
     uploadedAt?: boolean
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["festivalPhoto"]>
@@ -4756,11 +4925,11 @@ export namespace Prisma {
   export type FestivalPhotoSelectScalar = {
     id?: boolean
     festivalId?: boolean
-    url?: boolean
+    photo?: boolean
     uploadedAt?: boolean
   }
 
-  export type FestivalPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "festivalId" | "url" | "uploadedAt", ExtArgs["result"]["festivalPhoto"]>
+  export type FestivalPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "festivalId" | "photo" | "uploadedAt", ExtArgs["result"]["festivalPhoto"]>
   export type FestivalPhotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     festival?: boolean | FestivalDefaultArgs<ExtArgs>
   }
@@ -4779,7 +4948,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       festivalId: number
-      url: string
+      photo: Uint8Array
       uploadedAt: Date
     }, ExtArgs["result"]["festivalPhoto"]>
     composites: {}
@@ -5207,7 +5376,7 @@ export namespace Prisma {
   interface FestivalPhotoFieldRefs {
     readonly id: FieldRef<"FestivalPhoto", 'Int'>
     readonly festivalId: FieldRef<"FestivalPhoto", 'Int'>
-    readonly url: FieldRef<"FestivalPhoto", 'String'>
+    readonly photo: FieldRef<"FestivalPhoto", 'Bytes'>
     readonly uploadedAt: FieldRef<"FestivalPhoto", 'DateTime'>
   }
     
@@ -5624,6 +5793,1089 @@ export namespace Prisma {
 
 
   /**
+   * Model MissionPhoto
+   */
+
+  export type AggregateMissionPhoto = {
+    _count: MissionPhotoCountAggregateOutputType | null
+    _avg: MissionPhotoAvgAggregateOutputType | null
+    _sum: MissionPhotoSumAggregateOutputType | null
+    _min: MissionPhotoMinAggregateOutputType | null
+    _max: MissionPhotoMaxAggregateOutputType | null
+  }
+
+  export type MissionPhotoAvgAggregateOutputType = {
+    id: number | null
+    missionId: number | null
+  }
+
+  export type MissionPhotoSumAggregateOutputType = {
+    id: number | null
+    missionId: number | null
+  }
+
+  export type MissionPhotoMinAggregateOutputType = {
+    id: number | null
+    missionId: number | null
+    photo: Uint8Array | null
+    uploadedAt: Date | null
+  }
+
+  export type MissionPhotoMaxAggregateOutputType = {
+    id: number | null
+    missionId: number | null
+    photo: Uint8Array | null
+    uploadedAt: Date | null
+  }
+
+  export type MissionPhotoCountAggregateOutputType = {
+    id: number
+    missionId: number
+    photo: number
+    uploadedAt: number
+    _all: number
+  }
+
+
+  export type MissionPhotoAvgAggregateInputType = {
+    id?: true
+    missionId?: true
+  }
+
+  export type MissionPhotoSumAggregateInputType = {
+    id?: true
+    missionId?: true
+  }
+
+  export type MissionPhotoMinAggregateInputType = {
+    id?: true
+    missionId?: true
+    photo?: true
+    uploadedAt?: true
+  }
+
+  export type MissionPhotoMaxAggregateInputType = {
+    id?: true
+    missionId?: true
+    photo?: true
+    uploadedAt?: true
+  }
+
+  export type MissionPhotoCountAggregateInputType = {
+    id?: true
+    missionId?: true
+    photo?: true
+    uploadedAt?: true
+    _all?: true
+  }
+
+  export type MissionPhotoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MissionPhoto to aggregate.
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MissionPhotos to fetch.
+     */
+    orderBy?: MissionPhotoOrderByWithRelationInput | MissionPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MissionPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MissionPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MissionPhotos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MissionPhotos
+    **/
+    _count?: true | MissionPhotoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MissionPhotoAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MissionPhotoSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MissionPhotoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MissionPhotoMaxAggregateInputType
+  }
+
+  export type GetMissionPhotoAggregateType<T extends MissionPhotoAggregateArgs> = {
+        [P in keyof T & keyof AggregateMissionPhoto]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMissionPhoto[P]>
+      : GetScalarType<T[P], AggregateMissionPhoto[P]>
+  }
+
+
+
+
+  export type MissionPhotoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MissionPhotoWhereInput
+    orderBy?: MissionPhotoOrderByWithAggregationInput | MissionPhotoOrderByWithAggregationInput[]
+    by: MissionPhotoScalarFieldEnum[] | MissionPhotoScalarFieldEnum
+    having?: MissionPhotoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MissionPhotoCountAggregateInputType | true
+    _avg?: MissionPhotoAvgAggregateInputType
+    _sum?: MissionPhotoSumAggregateInputType
+    _min?: MissionPhotoMinAggregateInputType
+    _max?: MissionPhotoMaxAggregateInputType
+  }
+
+  export type MissionPhotoGroupByOutputType = {
+    id: number
+    missionId: number
+    photo: Uint8Array
+    uploadedAt: Date
+    _count: MissionPhotoCountAggregateOutputType | null
+    _avg: MissionPhotoAvgAggregateOutputType | null
+    _sum: MissionPhotoSumAggregateOutputType | null
+    _min: MissionPhotoMinAggregateOutputType | null
+    _max: MissionPhotoMaxAggregateOutputType | null
+  }
+
+  type GetMissionPhotoGroupByPayload<T extends MissionPhotoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MissionPhotoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MissionPhotoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MissionPhotoGroupByOutputType[P]>
+            : GetScalarType<T[P], MissionPhotoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MissionPhotoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    missionId?: boolean
+    photo?: boolean
+    uploadedAt?: boolean
+    mission?: boolean | MissionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["missionPhoto"]>
+
+  export type MissionPhotoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    missionId?: boolean
+    photo?: boolean
+    uploadedAt?: boolean
+    mission?: boolean | MissionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["missionPhoto"]>
+
+  export type MissionPhotoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    missionId?: boolean
+    photo?: boolean
+    uploadedAt?: boolean
+    mission?: boolean | MissionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["missionPhoto"]>
+
+  export type MissionPhotoSelectScalar = {
+    id?: boolean
+    missionId?: boolean
+    photo?: boolean
+    uploadedAt?: boolean
+  }
+
+  export type MissionPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "missionId" | "photo" | "uploadedAt", ExtArgs["result"]["missionPhoto"]>
+  export type MissionPhotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mission?: boolean | MissionDefaultArgs<ExtArgs>
+  }
+  export type MissionPhotoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mission?: boolean | MissionDefaultArgs<ExtArgs>
+  }
+  export type MissionPhotoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mission?: boolean | MissionDefaultArgs<ExtArgs>
+  }
+
+  export type $MissionPhotoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MissionPhoto"
+    objects: {
+      mission: Prisma.$MissionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      missionId: number
+      photo: Uint8Array
+      uploadedAt: Date
+    }, ExtArgs["result"]["missionPhoto"]>
+    composites: {}
+  }
+
+  type MissionPhotoGetPayload<S extends boolean | null | undefined | MissionPhotoDefaultArgs> = $Result.GetResult<Prisma.$MissionPhotoPayload, S>
+
+  type MissionPhotoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MissionPhotoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MissionPhotoCountAggregateInputType | true
+    }
+
+  export interface MissionPhotoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MissionPhoto'], meta: { name: 'MissionPhoto' } }
+    /**
+     * Find zero or one MissionPhoto that matches the filter.
+     * @param {MissionPhotoFindUniqueArgs} args - Arguments to find a MissionPhoto
+     * @example
+     * // Get one MissionPhoto
+     * const missionPhoto = await prisma.missionPhoto.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MissionPhotoFindUniqueArgs>(args: SelectSubset<T, MissionPhotoFindUniqueArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MissionPhoto that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MissionPhotoFindUniqueOrThrowArgs} args - Arguments to find a MissionPhoto
+     * @example
+     * // Get one MissionPhoto
+     * const missionPhoto = await prisma.missionPhoto.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MissionPhotoFindUniqueOrThrowArgs>(args: SelectSubset<T, MissionPhotoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MissionPhoto that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoFindFirstArgs} args - Arguments to find a MissionPhoto
+     * @example
+     * // Get one MissionPhoto
+     * const missionPhoto = await prisma.missionPhoto.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MissionPhotoFindFirstArgs>(args?: SelectSubset<T, MissionPhotoFindFirstArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MissionPhoto that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoFindFirstOrThrowArgs} args - Arguments to find a MissionPhoto
+     * @example
+     * // Get one MissionPhoto
+     * const missionPhoto = await prisma.missionPhoto.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MissionPhotoFindFirstOrThrowArgs>(args?: SelectSubset<T, MissionPhotoFindFirstOrThrowArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MissionPhotos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MissionPhotos
+     * const missionPhotos = await prisma.missionPhoto.findMany()
+     * 
+     * // Get first 10 MissionPhotos
+     * const missionPhotos = await prisma.missionPhoto.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const missionPhotoWithIdOnly = await prisma.missionPhoto.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MissionPhotoFindManyArgs>(args?: SelectSubset<T, MissionPhotoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MissionPhoto.
+     * @param {MissionPhotoCreateArgs} args - Arguments to create a MissionPhoto.
+     * @example
+     * // Create one MissionPhoto
+     * const MissionPhoto = await prisma.missionPhoto.create({
+     *   data: {
+     *     // ... data to create a MissionPhoto
+     *   }
+     * })
+     * 
+     */
+    create<T extends MissionPhotoCreateArgs>(args: SelectSubset<T, MissionPhotoCreateArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MissionPhotos.
+     * @param {MissionPhotoCreateManyArgs} args - Arguments to create many MissionPhotos.
+     * @example
+     * // Create many MissionPhotos
+     * const missionPhoto = await prisma.missionPhoto.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MissionPhotoCreateManyArgs>(args?: SelectSubset<T, MissionPhotoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MissionPhotos and returns the data saved in the database.
+     * @param {MissionPhotoCreateManyAndReturnArgs} args - Arguments to create many MissionPhotos.
+     * @example
+     * // Create many MissionPhotos
+     * const missionPhoto = await prisma.missionPhoto.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MissionPhotos and only return the `id`
+     * const missionPhotoWithIdOnly = await prisma.missionPhoto.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MissionPhotoCreateManyAndReturnArgs>(args?: SelectSubset<T, MissionPhotoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MissionPhoto.
+     * @param {MissionPhotoDeleteArgs} args - Arguments to delete one MissionPhoto.
+     * @example
+     * // Delete one MissionPhoto
+     * const MissionPhoto = await prisma.missionPhoto.delete({
+     *   where: {
+     *     // ... filter to delete one MissionPhoto
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MissionPhotoDeleteArgs>(args: SelectSubset<T, MissionPhotoDeleteArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MissionPhoto.
+     * @param {MissionPhotoUpdateArgs} args - Arguments to update one MissionPhoto.
+     * @example
+     * // Update one MissionPhoto
+     * const missionPhoto = await prisma.missionPhoto.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MissionPhotoUpdateArgs>(args: SelectSubset<T, MissionPhotoUpdateArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MissionPhotos.
+     * @param {MissionPhotoDeleteManyArgs} args - Arguments to filter MissionPhotos to delete.
+     * @example
+     * // Delete a few MissionPhotos
+     * const { count } = await prisma.missionPhoto.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MissionPhotoDeleteManyArgs>(args?: SelectSubset<T, MissionPhotoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MissionPhotos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MissionPhotos
+     * const missionPhoto = await prisma.missionPhoto.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MissionPhotoUpdateManyArgs>(args: SelectSubset<T, MissionPhotoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MissionPhotos and returns the data updated in the database.
+     * @param {MissionPhotoUpdateManyAndReturnArgs} args - Arguments to update many MissionPhotos.
+     * @example
+     * // Update many MissionPhotos
+     * const missionPhoto = await prisma.missionPhoto.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MissionPhotos and only return the `id`
+     * const missionPhotoWithIdOnly = await prisma.missionPhoto.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MissionPhotoUpdateManyAndReturnArgs>(args: SelectSubset<T, MissionPhotoUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MissionPhoto.
+     * @param {MissionPhotoUpsertArgs} args - Arguments to update or create a MissionPhoto.
+     * @example
+     * // Update or create a MissionPhoto
+     * const missionPhoto = await prisma.missionPhoto.upsert({
+     *   create: {
+     *     // ... data to create a MissionPhoto
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MissionPhoto we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MissionPhotoUpsertArgs>(args: SelectSubset<T, MissionPhotoUpsertArgs<ExtArgs>>): Prisma__MissionPhotoClient<$Result.GetResult<Prisma.$MissionPhotoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MissionPhotos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoCountArgs} args - Arguments to filter MissionPhotos to count.
+     * @example
+     * // Count the number of MissionPhotos
+     * const count = await prisma.missionPhoto.count({
+     *   where: {
+     *     // ... the filter for the MissionPhotos we want to count
+     *   }
+     * })
+    **/
+    count<T extends MissionPhotoCountArgs>(
+      args?: Subset<T, MissionPhotoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MissionPhotoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MissionPhoto.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MissionPhotoAggregateArgs>(args: Subset<T, MissionPhotoAggregateArgs>): Prisma.PrismaPromise<GetMissionPhotoAggregateType<T>>
+
+    /**
+     * Group by MissionPhoto.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MissionPhotoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MissionPhotoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MissionPhotoGroupByArgs['orderBy'] }
+        : { orderBy?: MissionPhotoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MissionPhotoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMissionPhotoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MissionPhoto model
+   */
+  readonly fields: MissionPhotoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MissionPhoto.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MissionPhotoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    mission<T extends MissionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MissionDefaultArgs<ExtArgs>>): Prisma__MissionClient<$Result.GetResult<Prisma.$MissionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MissionPhoto model
+   */
+  interface MissionPhotoFieldRefs {
+    readonly id: FieldRef<"MissionPhoto", 'Int'>
+    readonly missionId: FieldRef<"MissionPhoto", 'Int'>
+    readonly photo: FieldRef<"MissionPhoto", 'Bytes'>
+    readonly uploadedAt: FieldRef<"MissionPhoto", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MissionPhoto findUnique
+   */
+  export type MissionPhotoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * Filter, which MissionPhoto to fetch.
+     */
+    where: MissionPhotoWhereUniqueInput
+  }
+
+  /**
+   * MissionPhoto findUniqueOrThrow
+   */
+  export type MissionPhotoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * Filter, which MissionPhoto to fetch.
+     */
+    where: MissionPhotoWhereUniqueInput
+  }
+
+  /**
+   * MissionPhoto findFirst
+   */
+  export type MissionPhotoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * Filter, which MissionPhoto to fetch.
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MissionPhotos to fetch.
+     */
+    orderBy?: MissionPhotoOrderByWithRelationInput | MissionPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MissionPhotos.
+     */
+    cursor?: MissionPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MissionPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MissionPhotos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MissionPhotos.
+     */
+    distinct?: MissionPhotoScalarFieldEnum | MissionPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * MissionPhoto findFirstOrThrow
+   */
+  export type MissionPhotoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * Filter, which MissionPhoto to fetch.
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MissionPhotos to fetch.
+     */
+    orderBy?: MissionPhotoOrderByWithRelationInput | MissionPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MissionPhotos.
+     */
+    cursor?: MissionPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MissionPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MissionPhotos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MissionPhotos.
+     */
+    distinct?: MissionPhotoScalarFieldEnum | MissionPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * MissionPhoto findMany
+   */
+  export type MissionPhotoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * Filter, which MissionPhotos to fetch.
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MissionPhotos to fetch.
+     */
+    orderBy?: MissionPhotoOrderByWithRelationInput | MissionPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MissionPhotos.
+     */
+    cursor?: MissionPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MissionPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MissionPhotos.
+     */
+    skip?: number
+    distinct?: MissionPhotoScalarFieldEnum | MissionPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * MissionPhoto create
+   */
+  export type MissionPhotoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MissionPhoto.
+     */
+    data: XOR<MissionPhotoCreateInput, MissionPhotoUncheckedCreateInput>
+  }
+
+  /**
+   * MissionPhoto createMany
+   */
+  export type MissionPhotoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MissionPhotos.
+     */
+    data: MissionPhotoCreateManyInput | MissionPhotoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MissionPhoto createManyAndReturn
+   */
+  export type MissionPhotoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * The data used to create many MissionPhotos.
+     */
+    data: MissionPhotoCreateManyInput | MissionPhotoCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MissionPhoto update
+   */
+  export type MissionPhotoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MissionPhoto.
+     */
+    data: XOR<MissionPhotoUpdateInput, MissionPhotoUncheckedUpdateInput>
+    /**
+     * Choose, which MissionPhoto to update.
+     */
+    where: MissionPhotoWhereUniqueInput
+  }
+
+  /**
+   * MissionPhoto updateMany
+   */
+  export type MissionPhotoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MissionPhotos.
+     */
+    data: XOR<MissionPhotoUpdateManyMutationInput, MissionPhotoUncheckedUpdateManyInput>
+    /**
+     * Filter which MissionPhotos to update
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * Limit how many MissionPhotos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MissionPhoto updateManyAndReturn
+   */
+  export type MissionPhotoUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * The data used to update MissionPhotos.
+     */
+    data: XOR<MissionPhotoUpdateManyMutationInput, MissionPhotoUncheckedUpdateManyInput>
+    /**
+     * Filter which MissionPhotos to update
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * Limit how many MissionPhotos to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MissionPhoto upsert
+   */
+  export type MissionPhotoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MissionPhoto to update in case it exists.
+     */
+    where: MissionPhotoWhereUniqueInput
+    /**
+     * In case the MissionPhoto found by the `where` argument doesn't exist, create a new MissionPhoto with this data.
+     */
+    create: XOR<MissionPhotoCreateInput, MissionPhotoUncheckedCreateInput>
+    /**
+     * In case the MissionPhoto was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MissionPhotoUpdateInput, MissionPhotoUncheckedUpdateInput>
+  }
+
+  /**
+   * MissionPhoto delete
+   */
+  export type MissionPhotoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+    /**
+     * Filter which MissionPhoto to delete.
+     */
+    where: MissionPhotoWhereUniqueInput
+  }
+
+  /**
+   * MissionPhoto deleteMany
+   */
+  export type MissionPhotoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MissionPhotos to delete
+     */
+    where?: MissionPhotoWhereInput
+    /**
+     * Limit how many MissionPhotos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MissionPhoto without action
+   */
+  export type MissionPhotoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MissionPhoto
+     */
+    select?: MissionPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MissionPhoto
+     */
+    omit?: MissionPhotoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MissionPhotoInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5652,6 +6904,7 @@ export namespace Prisma {
     festivalId: 'festivalId',
     mintAddress: 'mintAddress',
     symbol: 'symbol',
+    name: 'name',
     decimals: 'decimals',
     supply: 'supply'
   };
@@ -5674,11 +6927,21 @@ export namespace Prisma {
   export const FestivalPhotoScalarFieldEnum: {
     id: 'id',
     festivalId: 'festivalId',
-    url: 'url',
+    photo: 'photo',
     uploadedAt: 'uploadedAt'
   };
 
   export type FestivalPhotoScalarFieldEnum = (typeof FestivalPhotoScalarFieldEnum)[keyof typeof FestivalPhotoScalarFieldEnum]
+
+
+  export const MissionPhotoScalarFieldEnum: {
+    id: 'id',
+    missionId: 'missionId',
+    photo: 'photo',
+    uploadedAt: 'uploadedAt'
+  };
+
+  export type MissionPhotoScalarFieldEnum = (typeof MissionPhotoScalarFieldEnum)[keyof typeof MissionPhotoScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5767,6 +7030,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes[]'
+   */
+  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5849,6 +7126,7 @@ export namespace Prisma {
     festivalId?: IntFilter<"Token"> | number
     mintAddress?: StringFilter<"Token"> | string
     symbol?: StringFilter<"Token"> | string
+    name?: StringFilter<"Token"> | string
     decimals?: IntFilter<"Token"> | number
     supply?: BigIntFilter<"Token"> | bigint | number
     festival?: XOR<FestivalScalarRelationFilter, FestivalWhereInput>
@@ -5859,6 +7137,7 @@ export namespace Prisma {
     festivalId?: SortOrder
     mintAddress?: SortOrder
     symbol?: SortOrder
+    name?: SortOrder
     decimals?: SortOrder
     supply?: SortOrder
     festival?: FestivalOrderByWithRelationInput
@@ -5872,6 +7151,7 @@ export namespace Prisma {
     OR?: TokenWhereInput[]
     NOT?: TokenWhereInput | TokenWhereInput[]
     symbol?: StringFilter<"Token"> | string
+    name?: StringFilter<"Token"> | string
     decimals?: IntFilter<"Token"> | number
     supply?: BigIntFilter<"Token"> | bigint | number
     festival?: XOR<FestivalScalarRelationFilter, FestivalWhereInput>
@@ -5882,6 +7162,7 @@ export namespace Prisma {
     festivalId?: SortOrder
     mintAddress?: SortOrder
     symbol?: SortOrder
+    name?: SortOrder
     decimals?: SortOrder
     supply?: SortOrder
     _count?: TokenCountOrderByAggregateInput
@@ -5899,6 +7180,7 @@ export namespace Prisma {
     festivalId?: IntWithAggregatesFilter<"Token"> | number
     mintAddress?: StringWithAggregatesFilter<"Token"> | string
     symbol?: StringWithAggregatesFilter<"Token"> | string
+    name?: StringWithAggregatesFilter<"Token"> | string
     decimals?: IntWithAggregatesFilter<"Token"> | number
     supply?: BigIntWithAggregatesFilter<"Token"> | bigint | number
   }
@@ -5914,6 +7196,7 @@ export namespace Prisma {
     rewardAmount?: BigIntFilter<"Mission"> | bigint | number
     createdAt?: DateTimeFilter<"Mission"> | Date | string
     festival?: XOR<FestivalScalarRelationFilter, FestivalWhereInput>
+    photos?: MissionPhotoListRelationFilter
   }
 
   export type MissionOrderByWithRelationInput = {
@@ -5924,6 +7207,7 @@ export namespace Prisma {
     rewardAmount?: SortOrder
     createdAt?: SortOrder
     festival?: FestivalOrderByWithRelationInput
+    photos?: MissionPhotoOrderByRelationAggregateInput
   }
 
   export type MissionWhereUniqueInput = Prisma.AtLeast<{
@@ -5937,6 +7221,7 @@ export namespace Prisma {
     rewardAmount?: BigIntFilter<"Mission"> | bigint | number
     createdAt?: DateTimeFilter<"Mission"> | Date | string
     festival?: XOR<FestivalScalarRelationFilter, FestivalWhereInput>
+    photos?: MissionPhotoListRelationFilter
   }, "id">
 
   export type MissionOrderByWithAggregationInput = {
@@ -5971,7 +7256,7 @@ export namespace Prisma {
     NOT?: FestivalPhotoWhereInput | FestivalPhotoWhereInput[]
     id?: IntFilter<"FestivalPhoto"> | number
     festivalId?: IntFilter<"FestivalPhoto"> | number
-    url?: StringFilter<"FestivalPhoto"> | string
+    photo?: BytesFilter<"FestivalPhoto"> | Uint8Array
     uploadedAt?: DateTimeFilter<"FestivalPhoto"> | Date | string
     festival?: XOR<FestivalScalarRelationFilter, FestivalWhereInput>
   }
@@ -5979,7 +7264,7 @@ export namespace Prisma {
   export type FestivalPhotoOrderByWithRelationInput = {
     id?: SortOrder
     festivalId?: SortOrder
-    url?: SortOrder
+    photo?: SortOrder
     uploadedAt?: SortOrder
     festival?: FestivalOrderByWithRelationInput
   }
@@ -5990,7 +7275,7 @@ export namespace Prisma {
     OR?: FestivalPhotoWhereInput[]
     NOT?: FestivalPhotoWhereInput | FestivalPhotoWhereInput[]
     festivalId?: IntFilter<"FestivalPhoto"> | number
-    url?: StringFilter<"FestivalPhoto"> | string
+    photo?: BytesFilter<"FestivalPhoto"> | Uint8Array
     uploadedAt?: DateTimeFilter<"FestivalPhoto"> | Date | string
     festival?: XOR<FestivalScalarRelationFilter, FestivalWhereInput>
   }, "id">
@@ -5998,7 +7283,7 @@ export namespace Prisma {
   export type FestivalPhotoOrderByWithAggregationInput = {
     id?: SortOrder
     festivalId?: SortOrder
-    url?: SortOrder
+    photo?: SortOrder
     uploadedAt?: SortOrder
     _count?: FestivalPhotoCountOrderByAggregateInput
     _avg?: FestivalPhotoAvgOrderByAggregateInput
@@ -6013,8 +7298,60 @@ export namespace Prisma {
     NOT?: FestivalPhotoScalarWhereWithAggregatesInput | FestivalPhotoScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"FestivalPhoto"> | number
     festivalId?: IntWithAggregatesFilter<"FestivalPhoto"> | number
-    url?: StringWithAggregatesFilter<"FestivalPhoto"> | string
+    photo?: BytesWithAggregatesFilter<"FestivalPhoto"> | Uint8Array
     uploadedAt?: DateTimeWithAggregatesFilter<"FestivalPhoto"> | Date | string
+  }
+
+  export type MissionPhotoWhereInput = {
+    AND?: MissionPhotoWhereInput | MissionPhotoWhereInput[]
+    OR?: MissionPhotoWhereInput[]
+    NOT?: MissionPhotoWhereInput | MissionPhotoWhereInput[]
+    id?: IntFilter<"MissionPhoto"> | number
+    missionId?: IntFilter<"MissionPhoto"> | number
+    photo?: BytesFilter<"MissionPhoto"> | Uint8Array
+    uploadedAt?: DateTimeFilter<"MissionPhoto"> | Date | string
+    mission?: XOR<MissionScalarRelationFilter, MissionWhereInput>
+  }
+
+  export type MissionPhotoOrderByWithRelationInput = {
+    id?: SortOrder
+    missionId?: SortOrder
+    photo?: SortOrder
+    uploadedAt?: SortOrder
+    mission?: MissionOrderByWithRelationInput
+  }
+
+  export type MissionPhotoWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: MissionPhotoWhereInput | MissionPhotoWhereInput[]
+    OR?: MissionPhotoWhereInput[]
+    NOT?: MissionPhotoWhereInput | MissionPhotoWhereInput[]
+    missionId?: IntFilter<"MissionPhoto"> | number
+    photo?: BytesFilter<"MissionPhoto"> | Uint8Array
+    uploadedAt?: DateTimeFilter<"MissionPhoto"> | Date | string
+    mission?: XOR<MissionScalarRelationFilter, MissionWhereInput>
+  }, "id">
+
+  export type MissionPhotoOrderByWithAggregationInput = {
+    id?: SortOrder
+    missionId?: SortOrder
+    photo?: SortOrder
+    uploadedAt?: SortOrder
+    _count?: MissionPhotoCountOrderByAggregateInput
+    _avg?: MissionPhotoAvgOrderByAggregateInput
+    _max?: MissionPhotoMaxOrderByAggregateInput
+    _min?: MissionPhotoMinOrderByAggregateInput
+    _sum?: MissionPhotoSumOrderByAggregateInput
+  }
+
+  export type MissionPhotoScalarWhereWithAggregatesInput = {
+    AND?: MissionPhotoScalarWhereWithAggregatesInput | MissionPhotoScalarWhereWithAggregatesInput[]
+    OR?: MissionPhotoScalarWhereWithAggregatesInput[]
+    NOT?: MissionPhotoScalarWhereWithAggregatesInput | MissionPhotoScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"MissionPhoto"> | number
+    missionId?: IntWithAggregatesFilter<"MissionPhoto"> | number
+    photo?: BytesWithAggregatesFilter<"MissionPhoto"> | Uint8Array
+    uploadedAt?: DateTimeWithAggregatesFilter<"MissionPhoto"> | Date | string
   }
 
   export type FestivalCreateInput = {
@@ -6078,6 +7415,7 @@ export namespace Prisma {
   export type TokenCreateInput = {
     mintAddress: string
     symbol: string
+    name: string
     decimals?: number
     supply?: bigint | number
     festival: FestivalCreateNestedOneWithoutTokenInput
@@ -6088,6 +7426,7 @@ export namespace Prisma {
     festivalId: number
     mintAddress: string
     symbol: string
+    name: string
     decimals?: number
     supply?: bigint | number
   }
@@ -6095,6 +7434,7 @@ export namespace Prisma {
   export type TokenUpdateInput = {
     mintAddress?: StringFieldUpdateOperationsInput | string
     symbol?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     decimals?: IntFieldUpdateOperationsInput | number
     supply?: BigIntFieldUpdateOperationsInput | bigint | number
     festival?: FestivalUpdateOneRequiredWithoutTokenNestedInput
@@ -6105,6 +7445,7 @@ export namespace Prisma {
     festivalId?: IntFieldUpdateOperationsInput | number
     mintAddress?: StringFieldUpdateOperationsInput | string
     symbol?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     decimals?: IntFieldUpdateOperationsInput | number
     supply?: BigIntFieldUpdateOperationsInput | bigint | number
   }
@@ -6114,6 +7455,7 @@ export namespace Prisma {
     festivalId: number
     mintAddress: string
     symbol: string
+    name: string
     decimals?: number
     supply?: bigint | number
   }
@@ -6121,6 +7463,7 @@ export namespace Prisma {
   export type TokenUpdateManyMutationInput = {
     mintAddress?: StringFieldUpdateOperationsInput | string
     symbol?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     decimals?: IntFieldUpdateOperationsInput | number
     supply?: BigIntFieldUpdateOperationsInput | bigint | number
   }
@@ -6130,6 +7473,7 @@ export namespace Prisma {
     festivalId?: IntFieldUpdateOperationsInput | number
     mintAddress?: StringFieldUpdateOperationsInput | string
     symbol?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     decimals?: IntFieldUpdateOperationsInput | number
     supply?: BigIntFieldUpdateOperationsInput | bigint | number
   }
@@ -6140,6 +7484,7 @@ export namespace Prisma {
     rewardAmount: bigint | number
     createdAt?: Date | string
     festival: FestivalCreateNestedOneWithoutMissionsInput
+    photos?: MissionPhotoCreateNestedManyWithoutMissionInput
   }
 
   export type MissionUncheckedCreateInput = {
@@ -6149,6 +7494,7 @@ export namespace Prisma {
     description?: string | null
     rewardAmount: bigint | number
     createdAt?: Date | string
+    photos?: MissionPhotoUncheckedCreateNestedManyWithoutMissionInput
   }
 
   export type MissionUpdateInput = {
@@ -6157,6 +7503,7 @@ export namespace Prisma {
     rewardAmount?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     festival?: FestivalUpdateOneRequiredWithoutMissionsNestedInput
+    photos?: MissionPhotoUpdateManyWithoutMissionNestedInput
   }
 
   export type MissionUncheckedUpdateInput = {
@@ -6166,6 +7513,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rewardAmount?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    photos?: MissionPhotoUncheckedUpdateManyWithoutMissionNestedInput
   }
 
   export type MissionCreateManyInput = {
@@ -6194,7 +7542,7 @@ export namespace Prisma {
   }
 
   export type FestivalPhotoCreateInput = {
-    url: string
+    photo: Uint8Array
     uploadedAt?: Date | string
     festival: FestivalCreateNestedOneWithoutPhotosInput
   }
@@ -6202,12 +7550,12 @@ export namespace Prisma {
   export type FestivalPhotoUncheckedCreateInput = {
     id?: number
     festivalId: number
-    url: string
+    photo: Uint8Array
     uploadedAt?: Date | string
   }
 
   export type FestivalPhotoUpdateInput = {
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     festival?: FestivalUpdateOneRequiredWithoutPhotosNestedInput
   }
@@ -6215,26 +7563,71 @@ export namespace Prisma {
   export type FestivalPhotoUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     festivalId?: IntFieldUpdateOperationsInput | number
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FestivalPhotoCreateManyInput = {
     id?: number
     festivalId: number
-    url: string
+    photo: Uint8Array
     uploadedAt?: Date | string
   }
 
   export type FestivalPhotoUpdateManyMutationInput = {
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FestivalPhotoUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     festivalId?: IntFieldUpdateOperationsInput | number
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MissionPhotoCreateInput = {
+    photo: Uint8Array
+    uploadedAt?: Date | string
+    mission: MissionCreateNestedOneWithoutPhotosInput
+  }
+
+  export type MissionPhotoUncheckedCreateInput = {
+    id?: number
+    missionId: number
+    photo: Uint8Array
+    uploadedAt?: Date | string
+  }
+
+  export type MissionPhotoUpdateInput = {
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mission?: MissionUpdateOneRequiredWithoutPhotosNestedInput
+  }
+
+  export type MissionPhotoUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    missionId?: IntFieldUpdateOperationsInput | number
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MissionPhotoCreateManyInput = {
+    id?: number
+    missionId: number
+    photo: Uint8Array
+    uploadedAt?: Date | string
+  }
+
+  export type MissionPhotoUpdateManyMutationInput = {
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MissionPhotoUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    missionId?: IntFieldUpdateOperationsInput | number
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6436,6 +7829,7 @@ export namespace Prisma {
     festivalId?: SortOrder
     mintAddress?: SortOrder
     symbol?: SortOrder
+    name?: SortOrder
     decimals?: SortOrder
     supply?: SortOrder
   }
@@ -6452,6 +7846,7 @@ export namespace Prisma {
     festivalId?: SortOrder
     mintAddress?: SortOrder
     symbol?: SortOrder
+    name?: SortOrder
     decimals?: SortOrder
     supply?: SortOrder
   }
@@ -6461,6 +7856,7 @@ export namespace Prisma {
     festivalId?: SortOrder
     mintAddress?: SortOrder
     symbol?: SortOrder
+    name?: SortOrder
     decimals?: SortOrder
     supply?: SortOrder
   }
@@ -6486,6 +7882,16 @@ export namespace Prisma {
     _sum?: NestedBigIntFilter<$PrismaModel>
     _min?: NestedBigIntFilter<$PrismaModel>
     _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type MissionPhotoListRelationFilter = {
+    every?: MissionPhotoWhereInput
+    some?: MissionPhotoWhereInput
+    none?: MissionPhotoWhereInput
+  }
+
+  export type MissionPhotoOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type MissionCountOrderByAggregateInput = {
@@ -6527,10 +7933,17 @@ export namespace Prisma {
     rewardAmount?: SortOrder
   }
 
+  export type BytesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesFilter<$PrismaModel> | Uint8Array
+  }
+
   export type FestivalPhotoCountOrderByAggregateInput = {
     id?: SortOrder
     festivalId?: SortOrder
-    url?: SortOrder
+    photo?: SortOrder
     uploadedAt?: SortOrder
   }
 
@@ -6542,20 +7955,66 @@ export namespace Prisma {
   export type FestivalPhotoMaxOrderByAggregateInput = {
     id?: SortOrder
     festivalId?: SortOrder
-    url?: SortOrder
+    photo?: SortOrder
     uploadedAt?: SortOrder
   }
 
   export type FestivalPhotoMinOrderByAggregateInput = {
     id?: SortOrder
     festivalId?: SortOrder
-    url?: SortOrder
+    photo?: SortOrder
     uploadedAt?: SortOrder
   }
 
   export type FestivalPhotoSumOrderByAggregateInput = {
     id?: SortOrder
     festivalId?: SortOrder
+  }
+
+  export type BytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Uint8Array
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
+  }
+
+  export type MissionScalarRelationFilter = {
+    is?: MissionWhereInput
+    isNot?: MissionWhereInput
+  }
+
+  export type MissionPhotoCountOrderByAggregateInput = {
+    id?: SortOrder
+    missionId?: SortOrder
+    photo?: SortOrder
+    uploadedAt?: SortOrder
+  }
+
+  export type MissionPhotoAvgOrderByAggregateInput = {
+    id?: SortOrder
+    missionId?: SortOrder
+  }
+
+  export type MissionPhotoMaxOrderByAggregateInput = {
+    id?: SortOrder
+    missionId?: SortOrder
+    photo?: SortOrder
+    uploadedAt?: SortOrder
+  }
+
+  export type MissionPhotoMinOrderByAggregateInput = {
+    id?: SortOrder
+    missionId?: SortOrder
+    photo?: SortOrder
+    uploadedAt?: SortOrder
+  }
+
+  export type MissionPhotoSumOrderByAggregateInput = {
+    id?: SortOrder
+    missionId?: SortOrder
   }
 
   export type TokenCreateNestedOneWithoutFestivalInput = {
@@ -6722,6 +8181,20 @@ export namespace Prisma {
     connect?: FestivalWhereUniqueInput
   }
 
+  export type MissionPhotoCreateNestedManyWithoutMissionInput = {
+    create?: XOR<MissionPhotoCreateWithoutMissionInput, MissionPhotoUncheckedCreateWithoutMissionInput> | MissionPhotoCreateWithoutMissionInput[] | MissionPhotoUncheckedCreateWithoutMissionInput[]
+    connectOrCreate?: MissionPhotoCreateOrConnectWithoutMissionInput | MissionPhotoCreateOrConnectWithoutMissionInput[]
+    createMany?: MissionPhotoCreateManyMissionInputEnvelope
+    connect?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+  }
+
+  export type MissionPhotoUncheckedCreateNestedManyWithoutMissionInput = {
+    create?: XOR<MissionPhotoCreateWithoutMissionInput, MissionPhotoUncheckedCreateWithoutMissionInput> | MissionPhotoCreateWithoutMissionInput[] | MissionPhotoUncheckedCreateWithoutMissionInput[]
+    connectOrCreate?: MissionPhotoCreateOrConnectWithoutMissionInput | MissionPhotoCreateOrConnectWithoutMissionInput[]
+    createMany?: MissionPhotoCreateManyMissionInputEnvelope
+    connect?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+  }
+
   export type FestivalUpdateOneRequiredWithoutMissionsNestedInput = {
     create?: XOR<FestivalCreateWithoutMissionsInput, FestivalUncheckedCreateWithoutMissionsInput>
     connectOrCreate?: FestivalCreateOrConnectWithoutMissionsInput
@@ -6730,10 +8203,42 @@ export namespace Prisma {
     update?: XOR<XOR<FestivalUpdateToOneWithWhereWithoutMissionsInput, FestivalUpdateWithoutMissionsInput>, FestivalUncheckedUpdateWithoutMissionsInput>
   }
 
+  export type MissionPhotoUpdateManyWithoutMissionNestedInput = {
+    create?: XOR<MissionPhotoCreateWithoutMissionInput, MissionPhotoUncheckedCreateWithoutMissionInput> | MissionPhotoCreateWithoutMissionInput[] | MissionPhotoUncheckedCreateWithoutMissionInput[]
+    connectOrCreate?: MissionPhotoCreateOrConnectWithoutMissionInput | MissionPhotoCreateOrConnectWithoutMissionInput[]
+    upsert?: MissionPhotoUpsertWithWhereUniqueWithoutMissionInput | MissionPhotoUpsertWithWhereUniqueWithoutMissionInput[]
+    createMany?: MissionPhotoCreateManyMissionInputEnvelope
+    set?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    disconnect?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    delete?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    connect?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    update?: MissionPhotoUpdateWithWhereUniqueWithoutMissionInput | MissionPhotoUpdateWithWhereUniqueWithoutMissionInput[]
+    updateMany?: MissionPhotoUpdateManyWithWhereWithoutMissionInput | MissionPhotoUpdateManyWithWhereWithoutMissionInput[]
+    deleteMany?: MissionPhotoScalarWhereInput | MissionPhotoScalarWhereInput[]
+  }
+
+  export type MissionPhotoUncheckedUpdateManyWithoutMissionNestedInput = {
+    create?: XOR<MissionPhotoCreateWithoutMissionInput, MissionPhotoUncheckedCreateWithoutMissionInput> | MissionPhotoCreateWithoutMissionInput[] | MissionPhotoUncheckedCreateWithoutMissionInput[]
+    connectOrCreate?: MissionPhotoCreateOrConnectWithoutMissionInput | MissionPhotoCreateOrConnectWithoutMissionInput[]
+    upsert?: MissionPhotoUpsertWithWhereUniqueWithoutMissionInput | MissionPhotoUpsertWithWhereUniqueWithoutMissionInput[]
+    createMany?: MissionPhotoCreateManyMissionInputEnvelope
+    set?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    disconnect?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    delete?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    connect?: MissionPhotoWhereUniqueInput | MissionPhotoWhereUniqueInput[]
+    update?: MissionPhotoUpdateWithWhereUniqueWithoutMissionInput | MissionPhotoUpdateWithWhereUniqueWithoutMissionInput[]
+    updateMany?: MissionPhotoUpdateManyWithWhereWithoutMissionInput | MissionPhotoUpdateManyWithWhereWithoutMissionInput[]
+    deleteMany?: MissionPhotoScalarWhereInput | MissionPhotoScalarWhereInput[]
+  }
+
   export type FestivalCreateNestedOneWithoutPhotosInput = {
     create?: XOR<FestivalCreateWithoutPhotosInput, FestivalUncheckedCreateWithoutPhotosInput>
     connectOrCreate?: FestivalCreateOrConnectWithoutPhotosInput
     connect?: FestivalWhereUniqueInput
+  }
+
+  export type BytesFieldUpdateOperationsInput = {
+    set?: Uint8Array
   }
 
   export type FestivalUpdateOneRequiredWithoutPhotosNestedInput = {
@@ -6742,6 +8247,20 @@ export namespace Prisma {
     upsert?: FestivalUpsertWithoutPhotosInput
     connect?: FestivalWhereUniqueInput
     update?: XOR<XOR<FestivalUpdateToOneWithWhereWithoutPhotosInput, FestivalUpdateWithoutPhotosInput>, FestivalUncheckedUpdateWithoutPhotosInput>
+  }
+
+  export type MissionCreateNestedOneWithoutPhotosInput = {
+    create?: XOR<MissionCreateWithoutPhotosInput, MissionUncheckedCreateWithoutPhotosInput>
+    connectOrCreate?: MissionCreateOrConnectWithoutPhotosInput
+    connect?: MissionWhereUniqueInput
+  }
+
+  export type MissionUpdateOneRequiredWithoutPhotosNestedInput = {
+    create?: XOR<MissionCreateWithoutPhotosInput, MissionUncheckedCreateWithoutPhotosInput>
+    connectOrCreate?: MissionCreateOrConnectWithoutPhotosInput
+    upsert?: MissionUpsertWithoutPhotosInput
+    connect?: MissionWhereUniqueInput
+    update?: XOR<XOR<MissionUpdateToOneWithWhereWithoutPhotosInput, MissionUpdateWithoutPhotosInput>, MissionUncheckedUpdateWithoutPhotosInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -6907,9 +8426,27 @@ export namespace Prisma {
     _max?: NestedBigIntFilter<$PrismaModel>
   }
 
+  export type NestedBytesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesFilter<$PrismaModel> | Uint8Array
+  }
+
+  export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Uint8Array
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
+  }
+
   export type TokenCreateWithoutFestivalInput = {
     mintAddress: string
     symbol: string
+    name: string
     decimals?: number
     supply?: bigint | number
   }
@@ -6918,6 +8455,7 @@ export namespace Prisma {
     id?: number
     mintAddress: string
     symbol: string
+    name: string
     decimals?: number
     supply?: bigint | number
   }
@@ -6932,6 +8470,7 @@ export namespace Prisma {
     description?: string | null
     rewardAmount: bigint | number
     createdAt?: Date | string
+    photos?: MissionPhotoCreateNestedManyWithoutMissionInput
   }
 
   export type MissionUncheckedCreateWithoutFestivalInput = {
@@ -6940,6 +8479,7 @@ export namespace Prisma {
     description?: string | null
     rewardAmount: bigint | number
     createdAt?: Date | string
+    photos?: MissionPhotoUncheckedCreateNestedManyWithoutMissionInput
   }
 
   export type MissionCreateOrConnectWithoutFestivalInput = {
@@ -6953,13 +8493,13 @@ export namespace Prisma {
   }
 
   export type FestivalPhotoCreateWithoutFestivalInput = {
-    url: string
+    photo: Uint8Array
     uploadedAt?: Date | string
   }
 
   export type FestivalPhotoUncheckedCreateWithoutFestivalInput = {
     id?: number
-    url: string
+    photo: Uint8Array
     uploadedAt?: Date | string
   }
 
@@ -6987,6 +8527,7 @@ export namespace Prisma {
   export type TokenUpdateWithoutFestivalInput = {
     mintAddress?: StringFieldUpdateOperationsInput | string
     symbol?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     decimals?: IntFieldUpdateOperationsInput | number
     supply?: BigIntFieldUpdateOperationsInput | bigint | number
   }
@@ -6995,6 +8536,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     mintAddress?: StringFieldUpdateOperationsInput | string
     symbol?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     decimals?: IntFieldUpdateOperationsInput | number
     supply?: BigIntFieldUpdateOperationsInput | bigint | number
   }
@@ -7049,7 +8591,7 @@ export namespace Prisma {
     NOT?: FestivalPhotoScalarWhereInput | FestivalPhotoScalarWhereInput[]
     id?: IntFilter<"FestivalPhoto"> | number
     festivalId?: IntFilter<"FestivalPhoto"> | number
-    url?: StringFilter<"FestivalPhoto"> | string
+    photo?: BytesFilter<"FestivalPhoto"> | Uint8Array
     uploadedAt?: DateTimeFilter<"FestivalPhoto"> | Date | string
   }
 
@@ -7125,6 +8667,27 @@ export namespace Prisma {
     create: XOR<FestivalCreateWithoutMissionsInput, FestivalUncheckedCreateWithoutMissionsInput>
   }
 
+  export type MissionPhotoCreateWithoutMissionInput = {
+    photo: Uint8Array
+    uploadedAt?: Date | string
+  }
+
+  export type MissionPhotoUncheckedCreateWithoutMissionInput = {
+    id?: number
+    photo: Uint8Array
+    uploadedAt?: Date | string
+  }
+
+  export type MissionPhotoCreateOrConnectWithoutMissionInput = {
+    where: MissionPhotoWhereUniqueInput
+    create: XOR<MissionPhotoCreateWithoutMissionInput, MissionPhotoUncheckedCreateWithoutMissionInput>
+  }
+
+  export type MissionPhotoCreateManyMissionInputEnvelope = {
+    data: MissionPhotoCreateManyMissionInput | MissionPhotoCreateManyMissionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FestivalUpsertWithoutMissionsInput = {
     update: XOR<FestivalUpdateWithoutMissionsInput, FestivalUncheckedUpdateWithoutMissionsInput>
     create: XOR<FestivalCreateWithoutMissionsInput, FestivalUncheckedCreateWithoutMissionsInput>
@@ -7151,6 +8714,32 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     token?: TokenUncheckedUpdateOneWithoutFestivalNestedInput
     photos?: FestivalPhotoUncheckedUpdateManyWithoutFestivalNestedInput
+  }
+
+  export type MissionPhotoUpsertWithWhereUniqueWithoutMissionInput = {
+    where: MissionPhotoWhereUniqueInput
+    update: XOR<MissionPhotoUpdateWithoutMissionInput, MissionPhotoUncheckedUpdateWithoutMissionInput>
+    create: XOR<MissionPhotoCreateWithoutMissionInput, MissionPhotoUncheckedCreateWithoutMissionInput>
+  }
+
+  export type MissionPhotoUpdateWithWhereUniqueWithoutMissionInput = {
+    where: MissionPhotoWhereUniqueInput
+    data: XOR<MissionPhotoUpdateWithoutMissionInput, MissionPhotoUncheckedUpdateWithoutMissionInput>
+  }
+
+  export type MissionPhotoUpdateManyWithWhereWithoutMissionInput = {
+    where: MissionPhotoScalarWhereInput
+    data: XOR<MissionPhotoUpdateManyMutationInput, MissionPhotoUncheckedUpdateManyWithoutMissionInput>
+  }
+
+  export type MissionPhotoScalarWhereInput = {
+    AND?: MissionPhotoScalarWhereInput | MissionPhotoScalarWhereInput[]
+    OR?: MissionPhotoScalarWhereInput[]
+    NOT?: MissionPhotoScalarWhereInput | MissionPhotoScalarWhereInput[]
+    id?: IntFilter<"MissionPhoto"> | number
+    missionId?: IntFilter<"MissionPhoto"> | number
+    photo?: BytesFilter<"MissionPhoto"> | Uint8Array
+    uploadedAt?: DateTimeFilter<"MissionPhoto"> | Date | string
   }
 
   export type FestivalCreateWithoutPhotosInput = {
@@ -7203,6 +8792,56 @@ export namespace Prisma {
     missions?: MissionUncheckedUpdateManyWithoutFestivalNestedInput
   }
 
+  export type MissionCreateWithoutPhotosInput = {
+    title: string
+    description?: string | null
+    rewardAmount: bigint | number
+    createdAt?: Date | string
+    festival: FestivalCreateNestedOneWithoutMissionsInput
+  }
+
+  export type MissionUncheckedCreateWithoutPhotosInput = {
+    id?: number
+    festivalId: number
+    title: string
+    description?: string | null
+    rewardAmount: bigint | number
+    createdAt?: Date | string
+  }
+
+  export type MissionCreateOrConnectWithoutPhotosInput = {
+    where: MissionWhereUniqueInput
+    create: XOR<MissionCreateWithoutPhotosInput, MissionUncheckedCreateWithoutPhotosInput>
+  }
+
+  export type MissionUpsertWithoutPhotosInput = {
+    update: XOR<MissionUpdateWithoutPhotosInput, MissionUncheckedUpdateWithoutPhotosInput>
+    create: XOR<MissionCreateWithoutPhotosInput, MissionUncheckedCreateWithoutPhotosInput>
+    where?: MissionWhereInput
+  }
+
+  export type MissionUpdateToOneWithWhereWithoutPhotosInput = {
+    where?: MissionWhereInput
+    data: XOR<MissionUpdateWithoutPhotosInput, MissionUncheckedUpdateWithoutPhotosInput>
+  }
+
+  export type MissionUpdateWithoutPhotosInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    rewardAmount?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    festival?: FestivalUpdateOneRequiredWithoutMissionsNestedInput
+  }
+
+  export type MissionUncheckedUpdateWithoutPhotosInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    festivalId?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    rewardAmount?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MissionCreateManyFestivalInput = {
     id?: number
     title: string
@@ -7213,7 +8852,7 @@ export namespace Prisma {
 
   export type FestivalPhotoCreateManyFestivalInput = {
     id?: number
-    url: string
+    photo: Uint8Array
     uploadedAt?: Date | string
   }
 
@@ -7222,6 +8861,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rewardAmount?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    photos?: MissionPhotoUpdateManyWithoutMissionNestedInput
   }
 
   export type MissionUncheckedUpdateWithoutFestivalInput = {
@@ -7230,6 +8870,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rewardAmount?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    photos?: MissionPhotoUncheckedUpdateManyWithoutMissionNestedInput
   }
 
   export type MissionUncheckedUpdateManyWithoutFestivalInput = {
@@ -7241,19 +8882,42 @@ export namespace Prisma {
   }
 
   export type FestivalPhotoUpdateWithoutFestivalInput = {
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FestivalPhotoUncheckedUpdateWithoutFestivalInput = {
     id?: IntFieldUpdateOperationsInput | number
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FestivalPhotoUncheckedUpdateManyWithoutFestivalInput = {
     id?: IntFieldUpdateOperationsInput | number
-    url?: StringFieldUpdateOperationsInput | string
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MissionPhotoCreateManyMissionInput = {
+    id?: number
+    photo: Uint8Array
+    uploadedAt?: Date | string
+  }
+
+  export type MissionPhotoUpdateWithoutMissionInput = {
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MissionPhotoUncheckedUpdateWithoutMissionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MissionPhotoUncheckedUpdateManyWithoutMissionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    photo?: BytesFieldUpdateOperationsInput | Uint8Array
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

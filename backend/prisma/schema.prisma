@@ -30,6 +30,7 @@ model Token {
   festivalId  Int      @unique
   mintAddress String   @unique
   symbol      String
+  name        String
   decimals    Int      @default(9)
   supply      BigInt   @default(0)
 }
@@ -42,12 +43,21 @@ model Mission {
   description String?
   rewardAmount BigInt
   createdAt   DateTime @default(now())
+  photos      MissionPhoto[]
 }
 
 model FestivalPhoto {
   id          Int      @id @default(autoincrement())
   festival    Festival @relation(fields: [festivalId], references: [id])
   festivalId  Int
-  url         String
+  photo       Bytes
+  uploadedAt  DateTime @default(now())
+}
+
+model MissionPhoto {
+  id          Int      @id @default(autoincrement())
+  mission     Mission @relation(fields: [missionId], references: [id])
+  missionId   Int
+  photo       Bytes
   uploadedAt  DateTime @default(now())
 }
