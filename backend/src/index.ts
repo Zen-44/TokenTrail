@@ -138,12 +138,17 @@ app.post("/festivals", authMiddleware, async (req, res) => {
       email,
       phone,
       location,
-      dates,
+      startDate,
+      endDate,
       expectedAttendees,
       sponsorBudget,
       description,
       website
     } = req.body;
+
+    // Parse dates and set default times
+    const parsedStartDate = new Date(startDate + 'T00:00:00.000Z');
+    const parsedEndDate = new Date(endDate + 'T23:59:59.999Z');
 
     const festival = await addFestival({
       festivalName,
@@ -151,7 +156,8 @@ app.post("/festivals", authMiddleware, async (req, res) => {
       email,
       phone,
       location,
-      dates,
+      startDate: parsedStartDate,
+      endDate: parsedEndDate,
       expectedAttendees,
       sponsorBudget,
       description,

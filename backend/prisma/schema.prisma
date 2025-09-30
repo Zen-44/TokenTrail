@@ -21,7 +21,8 @@ model Festival {
   email             String
   phone             String?
   location          String
-  dates             String
+  startDate         DateTime
+  endDate           DateTime
   expectedAttendees String?
   sponsorBudget     String?
   description       String?
