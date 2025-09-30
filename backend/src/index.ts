@@ -1,20 +1,115 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { Prisma, PrismaClient } from "../generated/prisma/client.js";
+import nacl from "tweetnacl";
+import jwt from "jsonwebtoken";
+import { PublicKey } from "@solana/web3.js";
 
 import { addFestival, getFestivals } from "./services/db.js";
+import { getQuestsByFestivalId } from "./services/db.js";
+
+import { v4 as uuidv4 } from "uuid";
+
+// Extend Express Request type to include user property
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(bodyParser.json());
+
+function authMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+  // if (!authHeader) return res.status(401).json({ error: "No token" });
+  if (!authHeader){
+    req.user = { id: 1, wallet: "4HyurZ5ST7ZqiWK16fYfaBRXSxrpjJQfXje34TwHgbqC" }; // TEMPORARY
+    next();
+    return;
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(403).json({ error: "Invalid token" });
+  }
+}
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello"});
 })
 
-app.get("/festivals", async (req, res) => {
+//
+// AUTH ENDPOINTS
+//
+app.get("/auth/challenge/:wallet", async (req, res) => {
+  console.log("Challenge request for wallet:", req.params.wallet);
+
+  const wallet = req.params.wallet;
+
+  // generate a random nonce (store in DB/Redis with expiration)
+  const nonce: string = uuidv4();
+
+  // store it temporarily (you could also use Redis or a DB table)
+  await prisma.user.upsert({
+    where: { wallet },
+    update: { nonce },
+    create: { wallet, nonce }
+  });
+
+  res.json({ nonce, message: `Sign this message to login: ${nonce}` });
+});
+
+app.post("/auth/verify", async (req, res) => {
+  const { wallet, signature, nonce } = req.body;
+
+  const user = await prisma.user.findUnique({ where: { wallet } });
+
+  if (!user || user.nonce !== nonce) {
+    return res.status(400).json({ error: "Invalid nonce" });
+  }
+
+  // verify signature
+  const message = `Sign this message to login: ${nonce}`;
+  const messageBytes = new TextEncoder().encode(message);
+  const signatureUint8 = new Uint8Array(signature);
+  const publicKeyBytes = new PublicKey(wallet).toBytes();
+
+  const valid = nacl.sign.detached.verify(messageBytes, signatureUint8, publicKeyBytes);
+  if (!valid) {
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+
+  // generate JWT
+  const token = jwt.sign({ wallet }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+
+  // rotate nonce so replay attacks don’t work
+  await prisma.user.update({
+    where: { wallet },
+    data: { nonce: null }
+  });
+
+  res.json({ token });
+
+  console.log("User authenticated:", wallet);
+});
+
+
+//
+// Festival Endpoints
+//
+app.get("/festivals", authMiddleware, async (req, res) => {
   try {
     const festivals = await getFestivals();
     res.json({ festivals });
@@ -23,10 +118,19 @@ app.get("/festivals", async (req, res) => {
   }
 });
 
-app.post("/festivals", async (req, res) => {
+app.get("/festivals/:id/quests", authMiddleware, async (req, res) => {
+  const festivalId = parseInt(req.params.id, 10);
+  const wallet = req.user.wallet;
+
+  const quests = await getQuestsByFestivalId(festivalId, req.user.id);
+
+  res.json({ wallet, quests });
+});
+
+app.post("/festivals", authMiddleware, async (req, res) => {
   console.log("Festival form submission received");
   console.log(req.body);
-  
+
   try {
     const {
       festivalName,

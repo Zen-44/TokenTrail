@@ -15,5 +15,24 @@ export async function addFestival(data: Prisma.FestivalCreateInput) {
   });
 }
 
+export async function getQuestsByFestivalId(festivalId: number, userId: number) {
+	return prisma.quest.findMany({
+		where: { festivalId },
+		include: {
+			steps: {
+				orderBy: { order: "asc" },
+				include: {
+					progress: {
+						where: { userId },
+					},
+				},
+			},
+			progress: {
+				where: { userId },
+			},
+		},
+	});
+}
+
 
 export default prisma;
