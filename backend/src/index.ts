@@ -24,16 +24,45 @@ app.get("/festivals", async (req, res) => {
 });
 
 app.post("/festivals", async (req, res) => {
-    try {
-        const { name, description } = req.body;
-        const festival = await addFestival({ name, description });
-        res.status(201).json({ festival });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to add festival" });
-    }
-})
+  console.log("Festival form submission received");
+  console.log(req.body);
+  
+  try {
+    const {
+      festivalName,
+      organizerName,
+      email,
+      phone,
+      location,
+      dates,
+      expectedAttendees,
+      sponsorBudget,
+      description,
+      website
+    } = req.body;
+
+    const festival = await addFestival({
+      festivalName,
+      organizerName,
+      email,
+      phone,
+      location,
+      dates,
+      expectedAttendees,
+      sponsorBudget,
+      description,
+      website,
+    });
+
+    res.status(201).json({ festival });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to add festival" });
+  }
+});
 
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+

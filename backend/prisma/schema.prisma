@@ -15,18 +15,27 @@ datasource db {
 }
 
 model Festival {
-  id          Int              @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime         @default(now())
-  token       Token?
-  missions    Mission[]
-  photos      FestivalPhoto[]
+  id                Int        @id @default(autoincrement())
+  festivalName      String
+  organizerName     String
+  email             String
+  phone             String?
+  location          String
+  dates             String
+  expectedAttendees String?
+  sponsorBudget     String?
+  description       String?
+  website           String?
+  createdAt         DateTime   @default(now())
+
+  // back-relations
+  token    Token?     @relation("FestivalToken")
+  missions Mission[]  @relation("FestivalMissions")
 }
 
 model Token {
   id          Int      @id @default(autoincrement())
-  festival    Festival @relation(fields: [festivalId], references: [id])
+  festival    Festival @relation("FestivalToken", fields: [festivalId], references: [id])
   festivalId  Int      @unique
   mintAddress String   @unique
   symbol      String
@@ -36,28 +45,28 @@ model Token {
 }
 
 model Mission {
-  id          Int      @id @default(autoincrement())
-  festival    Festival @relation(fields: [festivalId], references: [id])
-  festivalId  Int
-  title       String
-  description String?
+  id           Int      @id @default(autoincrement())
+  festival     Festival @relation("FestivalMissions", fields: [festivalId], references: [id])
+  festivalId   Int
+  title        String
+  description  String?
   rewardAmount BigInt
-  createdAt   DateTime @default(now())
-  photos      MissionPhoto[]
+  createdAt    DateTime @default(now())
 }
 
-model FestivalPhoto {
-  id          Int      @id @default(autoincrement())
-  festival    Festival @relation(fields: [festivalId], references: [id])
-  festivalId  Int
-  photo       Bytes
-  uploadedAt  DateTime @default(now())
-}
 
-model MissionPhoto {
-  id          Int      @id @default(autoincrement())
-  mission     Mission @relation(fields: [missionId], references: [id])
-  missionId   Int
-  photo       Bytes
-  uploadedAt  DateTime @default(now())
-}
+// model FestivalPhoto {
+//   id          Int      @id @default(autoincrement())
+//   festival    Festival @relation(fields: [festivalId], references: [id])
+//   festivalId  Int
+//   photo       Bytes
+//   uploadedAt  DateTime @default(now()) // could remove
+// }
+
+// model MissionPhoto {
+//   id          Int      @id @default(autoincrement())
+//   mission     Mission @relation(fields: [missionId], references: [id])
+//   missionId   Int
+//   photo       Bytes
+//   uploadedAt  DateTime @default(now()) // could remove
+// }
