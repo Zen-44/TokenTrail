@@ -27,6 +27,7 @@ model Festival {
   sponsorBudget     String?
   description       String?
   website           String?
+  approved          Boolean    @default(false)
   createdAt         DateTime   @default(now())
 
   // back-relations
@@ -77,6 +78,7 @@ model User {
   id          Int      @id @default(autoincrement())
   wallet      String   @unique // Phantom wallet address
   nonce       String?  // for authentication challenge
+  isAdmin     Boolean  @default(false)
   createdAt   DateTime @default(now())
 
   questProgress QuestProgress[]

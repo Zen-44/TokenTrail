@@ -6,7 +6,7 @@ import nacl from "tweetnacl";
 import jwt from "jsonwebtoken";
 import { PublicKey } from "@solana/web3.js";
 
-import { addFestival, getFestivals } from "./services/db.js";
+import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet } from "./services/db.js";
 import { getQuestsByFestivalId } from "./services/db.js";
 
 import { v4 as uuidv4 } from "uuid";
@@ -43,6 +43,22 @@ function authMiddleware(req: express.Request, res: express.Response, next: expre
     next();
   } catch {
     return res.status(403).json({ error: "Invalid token" });
+  }
+}
+
+async function adminMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+
+  try {
+    const user = await getUserByWallet(req.user.wallet);
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ error: "Admin access required" });
+    }
+    next();
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to verify admin status" });
   }
 }
 
@@ -118,6 +134,15 @@ app.get("/festivals", authMiddleware, async (req, res) => {
   }
 });
 
+app.get("/admin/festivals", authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const festivals = await getAllFestivals();
+    res.json({ festivals });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch festivals" });
+  }
+});
+
 app.get("/festivals/:id/quests", authMiddleware, async (req, res) => {
   const festivalId = parseInt(req.params.id, 10);
   const wallet = req.user.wallet;
@@ -128,8 +153,7 @@ app.get("/festivals/:id/quests", authMiddleware, async (req, res) => {
 });
 
 app.post("/festivals", authMiddleware, async (req, res) => {
-  console.log("Festival form submission received");
-  console.log(req.body);
+  console.log("Festival form submission received ", req.body.festivalName);
 
   try {
     const {
@@ -168,6 +192,28 @@ app.post("/festivals", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to add festival" });
+  }
+});
+
+app.put("/admin/festivals/:id/approval", authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const festivalId = parseInt(req.params.id, 10);
+    const { approved } = req.body;
+
+    console.log(`Updating festival ${festivalId} approval to ${approved} by admin ${req.user.wallet}`);
+
+    if (typeof approved !== 'boolean') {
+      return res.status(400).json({ error: "approved field must be a boolean" });
+    }
+
+    const festival = await updateFestivalApproval(festivalId, approved);
+    res.json({ 
+      festival,
+      message: `Festival ${approved ? 'approved' : 'disapproved'} successfully` 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update festival approval" });
   }
 });
 
