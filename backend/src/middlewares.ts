@@ -44,9 +44,10 @@ export async function adminMiddleware(req: express.Request, res: express.Respons
     }
   
     try {
-      const user = await getUserByWallet(req.user.walletAddress);
+      const walletAddress = req.user.walletAddress || req.user.wallet;
+      const user = await getUserByWallet(walletAddress);
       if (!user || !user.isAdmin) {
-        console.warn(`Admin access denied for user: ${req.user.walletAddress}`);
+        console.warn(`Admin access denied for user: ${walletAddress}`);
         return res.status(403).json({ error: "Admin access required" });
       }
       next();
@@ -63,7 +64,8 @@ export async function organizerMiddleware(req: express.Request, res: express.Res
     }
 
     try {
-        const user = await getUserByWallet(req.user.walletAddress);
+        const walletAddress = req.user.walletAddress || req.user.wallet;
+        const user = await getUserByWallet(walletAddress);
         if (user && user.isAdmin) {
             console.log("User is admin, granting organizer access.");
             next();
@@ -71,9 +73,9 @@ export async function organizerMiddleware(req: express.Request, res: express.Res
         }
         const festivalId = req.body.festivalId;
         const festival = await getFestivalById(festivalId);
-        const isOrganizer = festival && festival.wallet == req.user.walletAddress;
+        const isOrganizer = festival && festival.wallet == walletAddress;
         if (!user || !festival || !isOrganizer) {
-            console.warn(`Organizer access denied for user ${req.user.walletAddress} on festival ${festivalId}`);
+            console.warn(`Organizer access denied for user ${walletAddress} on festival ${festivalId}`);
             return res.status(403).json({ error: "Organizer access required" });
         }
         next();
@@ -119,9 +121,10 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
     }
 
     try {
-        const user = await getUserByWallet(req.user.walletAddress);
+        const walletAddress = req.user.walletAddress || req.user.wallet;
+        const user = await getUserByWallet(walletAddress);
         if (!user) {
-            console.warn(`User not found: ${req.user.walletAddress}`);
+            console.warn(`User not found: ${walletAddress}`);
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -167,9 +170,10 @@ export async function festivalOrganizerMiddleware(req: express.Request, res: exp
     }
 
     try {
-        const user = await getUserByWallet(req.user.walletAddress);
+        const walletAddress = req.user.walletAddress || req.user.wallet;
+        const user = await getUserByWallet(walletAddress);
         if (!user) {
-            console.warn(`User not found: ${req.user.walletAddress}`);
+            console.warn(`User not found: ${walletAddress}`);
             return res.status(404).json({ error: "User not found" });
         }
 
