@@ -30,20 +30,14 @@ model Festival {
   approved          Boolean    @default(false)
   createdAt         DateTime   @default(now())
 
-  // back-relations
-  token    Token?     @relation("FestivalToken")
-  quests   Quest[]
-}
+  // Token details
+  tokenName         String?
+  tokenSymbol       String?
+  tokenSupply       BigInt?
+  tokenAddress      String?    @unique
 
-model Token {
-  id          Int      @id @default(autoincrement())
-  festival    Festival @relation("FestivalToken", fields: [festivalId], references: [id])
-  festivalId  Int      @unique
-  mintAddress String   @unique
-  symbol      String
-  name        String
-  decimals    Int      @default(9)
-  supply      BigInt   @default(0)
+  // back-relations
+  quests   Quest[]
 }
 
 model Quest {

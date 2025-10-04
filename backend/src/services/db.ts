@@ -54,5 +54,17 @@ export async function getQuestsByFestivalId(festivalId: number, userId: number) 
 	});
 }
 
+export async function getFestivalById(festivalId: number) {
+  return prisma.festival.findUnique({
+    where: { id: festivalId },
+  });
+}
+
+export async function updateFestivalTokenAddress(festivalId: number, tokenAddress: string) {
+  return prisma.festival.update({
+    where: { id: festivalId },
+    data: { tokenAddress },
+  });
+}
 
 export default prisma;

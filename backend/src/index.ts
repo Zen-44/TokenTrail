@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -6,10 +7,16 @@ import nacl from "tweetnacl";
 import jwt from "jsonwebtoken";
 import { PublicKey } from "@solana/web3.js";
 
-import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet } from "./services/db.js";
+import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet, getFestivalById, updateFestivalTokenAddress } from "./services/db.js";
 import { getQuestsByFestivalId } from "./services/db.js";
+import { createToken } from "./services/solana.js";
 
 import { v4 as uuidv4 } from "uuid";
+
+// Monkey patch BigInt to allow JSON serialization
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 // Extend Express Request type to include user property
 declare global {
@@ -99,28 +106,50 @@ app.post("/auth/verify", async (req, res) => {
   // verify signature
   const message = `Sign this message to login: ${nonce}`;
   const messageBytes = new TextEncoder().encode(message);
-  const signatureUint8 = new Uint8Array(signature);
-  const publicKeyBytes = new PublicKey(wallet).toBytes();
 
-  const valid = nacl.sign.detached.verify(messageBytes, signatureUint8, publicKeyBytes);
-  if (!valid) {
-    return res.status(401).json({ error: "Invalid signature" });
+  const publicKey = new PublicKey(wallet).toBytes();
+
+  const verified = nacl.sign.detached.verify(messageBytes, Buffer.from(signature, "base64"), publicKey);
+
+  if (!verified) {
+    return res.status(400).json({ error: "Invalid signature" });
   }
 
   // generate JWT
   const token = jwt.sign({ wallet }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 
-  // rotate nonce so replay attacks don’t work
-  await prisma.user.update({
-    where: { wallet },
-    data: { nonce: null }
-  });
-
   res.json({ token });
-
-  console.log("User authenticated:", wallet);
 });
 
+app.post("/festival/:id/generate-token", authMiddleware, adminMiddleware, async (req, res) => {
+  const festivalId = parseInt(req.params.id, 10);
+
+  try {
+    // Fetch festival details from the database
+    const festival = await getFestivalById(festivalId);
+
+    if (!festival) {
+      return res.status(404).json({ error: "Festival not found" });
+    }
+
+    const { tokenName, tokenSymbol, tokenSupply } = festival;
+
+    if (!tokenName || !tokenSymbol || !tokenSupply) {
+      return res.status(400).json({ error: "Token details are not set for this festival" });
+    }
+
+    // Generate the token on Solana Devnet
+    const { tokenAddress } = await createToken(tokenName, tokenSymbol, Number(tokenSupply));
+
+    // Update the festival with the token address
+    const updatedFestival = await updateFestivalTokenAddress(festivalId, tokenAddress);
+
+    res.json(updatedFestival);
+  } catch (error) {
+    console.error("Failed to generate token:", error);
+    res.status(500).json({ error: "Failed to generate token" });
+  }
+});
 
 //
 // Festival Endpoints
@@ -152,7 +181,7 @@ app.get("/festivals/:id/quests", authMiddleware, async (req, res) => {
   res.json({ wallet, quests });
 });
 
-app.post("/festivals", authMiddleware, async (req, res) => {
+app.post("/festivals", async (req, res) => {
   console.log("Festival form submission received ", req.body.festivalName);
 
   try {
@@ -167,7 +196,10 @@ app.post("/festivals", authMiddleware, async (req, res) => {
       expectedAttendees,
       sponsorBudget,
       description,
-      website
+      website,
+      tokenName,
+      tokenSymbol,
+      tokenSupply,
     } = req.body;
 
     // Parse dates and set default times
@@ -186,6 +218,9 @@ app.post("/festivals", authMiddleware, async (req, res) => {
       sponsorBudget,
       description,
       website,
+      tokenName,
+      tokenSymbol,
+      tokenSupply: tokenSupply ? BigInt(tokenSupply) : null,
     });
 
     res.status(201).json({ festival });
