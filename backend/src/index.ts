@@ -10,7 +10,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet, getFestivalById, updateFestivalTokenAddress } from "./services/db.js";
+import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet, getFestivalById, updateFestivalTokenAddress, updateFestival } from "./services/db.js";
 import { getQuestsByFestivalId } from "./services/db.js";
 import { createToken } from "./services/solana.js";
 
@@ -261,6 +261,41 @@ app.put("/admin/festivals/:id/approval", authMiddleware, adminMiddleware, async 
   }
 });
 
+app.put("/admin/festivals/:id", authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const festivalId = parseInt(req.params.id, 10);
+    const data = req.body;
+
+    // remove id from data
+    delete data.id;
+
+    // handle dates
+    if (data.startDate) {
+      const startDate = new Date(data.startDate);
+      startDate.setUTCHours(0, 0, 0, 0);
+      data.startDate = startDate;
+    }
+    if (data.endDate) {
+      const endDate = new Date(data.endDate);
+      endDate.setUTCHours(23, 59, 59, 999);
+      data.endDate = endDate;
+    }
+
+    // handle BigInt
+    if (data.tokenSupply) {
+      data.tokenSupply = BigInt(data.tokenSupply);
+    }
+
+    const festival = await updateFestival(festivalId, data);
+    res.json({
+      festival,
+      message: `Festival updated successfully`
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update festival" });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

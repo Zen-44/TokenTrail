@@ -67,4 +67,11 @@ export async function updateFestivalTokenAddress(festivalId: number, tokenAddres
   });
 }
 
+export async function updateFestival(festivalId: number, data: Prisma.FestivalUpdateInput) {
+  return prisma.festival.update({
+    where: { id: festivalId },
+    data,
+  });
+}
+
 export default prisma;
