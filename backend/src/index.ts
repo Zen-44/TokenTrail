@@ -144,6 +144,19 @@ app.get("/festivals", authMiddleware, async (req, res) => {
   }
 });
 
+app.get("/festival/:id", authMiddleware, async (req, res) => {
+  const festivalId = parseInt(req.params.id, 10);
+  try {
+    const festival = await getFestivalById(festivalId);
+    if (!festival) {
+      return res.status(404).json({ error: "Festival not found" });
+    }
+    res.json({ festival });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch festival" });
+  }
+});
+
 app.get("/admin/festivals", authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const festivals = await getAllFestivals();
