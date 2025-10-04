@@ -17,7 +17,12 @@ import {
   createCreateMetadataAccountV3Instruction,
   DataV2,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { Metaplex, keypairIdentity, irysStorage } from "@metaplex-foundation/js";
+import {
+  Metaplex,
+  keypairIdentity,
+  irysStorage,
+  toMetaplexFile,
+} from "@metaplex-foundation/js";
 
 const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
@@ -41,10 +46,12 @@ const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 );
 
+// This function will create a new token on the Solana devnet
 export async function createToken(
   tokenName: string,
   tokenSymbol: string,
-  tokenSupply: number
+  tokenSupply: number,
+  tokenLogo: Buffer
 ) {
   try {
     console.log(`Starting token creation for ${tokenName} (${tokenSymbol})`);
@@ -60,11 +67,26 @@ export async function createToken(
     );
     console.log(`New mint created: ${mint.toBase58()}`);
 
-    // Create metadata account
+    // Upload metadata in a two-step process to ensure correct URLs.
+
+    const metaplexFile = toMetaplexFile(tokenLogo, "logo.png");
+    const imageUri = (await metaplex.storage().upload(metaplexFile)).replace('https://arweave.net/', 'https://devnet.irys.xyz/');
+    console.log(`Image uploaded to: ${imageUri}`);
+
+    const { uri } = await metaplex.nfts().uploadMetadata({
+      name: tokenName,
+      symbol: tokenSymbol,
+      image: imageUri, // Use the URI from the image upload
+    });
+
+    const correctedUri = uri.replace('https://arweave.net/', 'https://devnet.irys.xyz/');
+    console.log(`Metadata uploaded. URI: ${correctedUri}`);
+
+    // 3. Create metadata account
     const metadataData: DataV2 = {
       name: tokenName,
       symbol: tokenSymbol,
-      uri: "", 
+      uri: correctedUri,
       sellerFeeBasisPoints: 0,
       creators: null,
       collection: null,

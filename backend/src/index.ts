@@ -6,6 +6,9 @@ import { Prisma, PrismaClient } from "../generated/prisma/client.js";
 import nacl from "tweetnacl";
 import jwt from "jsonwebtoken";
 import { PublicKey } from "@solana/web3.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet, getFestivalById, updateFestivalTokenAddress } from "./services/db.js";
 import { getQuestsByFestivalId } from "./services/db.js";
@@ -138,8 +141,14 @@ app.post("/festival/:id/generate-token", authMiddleware, adminMiddleware, async 
       return res.status(400).json({ error: "Token details are not set for this festival" });
     }
 
+    // Load the logo
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const logoPath = path.join(__dirname, '..', 'src', 'logo.png');
+    const logoBuffer = fs.readFileSync(logoPath);
+
     // Generate the token on Solana Devnet
-    const { tokenAddress } = await createToken(tokenName, tokenSymbol, Number(tokenSupply));
+    const { tokenAddress } = await createToken(tokenName, tokenSymbol, Number(tokenSupply), logoBuffer);
 
     // Update the festival with the token address
     const updatedFestival = await updateFestivalTokenAddress(festivalId, tokenAddress);
