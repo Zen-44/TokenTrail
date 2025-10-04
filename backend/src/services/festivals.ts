@@ -39,3 +39,13 @@ export async function removeEditor(festivalId: number, userWallet: string) {
         },
     });
 }
+
+export async function updateOwnFestival(festivalId: number, data: any) {
+    // Destructure to remove fields that should not be updated by the organizer
+    const { approved, wallet, tokenAddress, ...restOfData } = data;
+
+    return prisma.festival.update({
+        where: { id: festivalId },
+        data: restOfData,
+    });
+}

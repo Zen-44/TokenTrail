@@ -125,3 +125,34 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
     }
 }
 
+export async function festivalOrganizerMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+    if (!req.user) {
+        return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const festivalId = parseInt(req.params.id);
+    if (isNaN(festivalId)) {
+        return res.status(400).json({ error: "Invalid festival ID" });
+    }
+
+    try {
+        const user = await getUserByWallet(req.user.wallet);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        if (user.isAdmin) {
+            return next();
+        }
+
+        const festival = await getFestivalById(festivalId);
+        if (festival?.wallet === user.wallet) {
+            return next();
+        }
+
+        return res.status(403).json({ error: "You do not have permission to edit this festival." });
+    } catch (error) {
+        return res.status(500).json({ error: "Failed to verify organizer status" });
+    }
+}
+
