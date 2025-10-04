@@ -13,6 +13,8 @@ import { fileURLToPath } from "url";
 import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, getUserByWallet, getFestivalById, updateFestivalTokenAddress, updateFestival } from "./services/db.js";
 import { getQuestsByFestivalId } from "./services/db.js";
 import { createToken } from "./services/solana.js";
+import questRoutes from "./routes/quests.js";
+import { authMiddleware, adminMiddleware } from "./middlewares.js";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -37,40 +39,7 @@ const prisma = new PrismaClient();
 app.use(cors());
 app.use(bodyParser.json());
 
-function authMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const authHeader = req.headers.authorization;
-  // if (!authHeader) return res.status(401).json({ error: "No token" });
-  if (!authHeader){
-    req.user = { id: 1, wallet: "4HyurZ5ST7ZqiWK16fYfaBRXSxrpjJQfXje34TwHgbqC" }; // TEMPORARY
-    next();
-    return;
-  }
-
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    req.user = decoded;
-    next();
-  } catch {
-    return res.status(403).json({ error: "Invalid token" });
-  }
-}
-
-async function adminMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
-  if (!req.user) {
-    return res.status(401).json({ error: "Authentication required" });
-  }
-
-  try {
-    const user = await getUserByWallet(req.user.wallet);
-    if (!user || !user.isAdmin) {
-      return res.status(403).json({ error: "Admin access required" });
-    }
-    next();
-  } catch (error) {
-    return res.status(500).json({ error: "Failed to verify admin status" });
-  }
-}
+app.use("/api/quests", questRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello"});
@@ -195,6 +164,7 @@ app.post("/festivals", async (req, res) => {
   console.log("Festival form submission received ", req.body.festivalName);
 
   try {
+
     const {
       festivalName,
       organizerName,
@@ -210,6 +180,7 @@ app.post("/festivals", async (req, res) => {
       tokenName,
       tokenSymbol,
       tokenSupply,
+      wallet,
     } = req.body;
 
     // Parse dates and set default times
@@ -231,6 +202,7 @@ app.post("/festivals", async (req, res) => {
       tokenName,
       tokenSymbol,
       tokenSupply: tokenSupply ? BigInt(tokenSupply) : null,
+      wallet,
     });
 
     res.status(201).json({ festival });

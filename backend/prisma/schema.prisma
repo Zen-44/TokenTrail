@@ -27,6 +27,7 @@ model Festival {
   sponsorBudget     String?
   description       String?
   website           String?
+  wallet            String     @default("")
   approved          Boolean    @default(false)
   createdAt         DateTime   @default(now())
 
@@ -48,6 +49,8 @@ model Quest {
   difficulty  String?    // e.g. Easy, Medium, Hard
   duration    String?    // e.g. "2 hours"
   createdAt   DateTime   @default(now())
+  startDate   DateTime
+  endDate     DateTime
 
   festival    Festival   @relation(fields: [festivalId], references: [id])
   festivalId  Int
