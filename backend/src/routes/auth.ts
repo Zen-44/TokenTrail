@@ -10,38 +10,43 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // Request a token for signing
-router.post("/request-token", async (req, res) => {
-    try {
-      const { walletAddress } = req.body;
-      if (!walletAddress) {
-        return res.status(400).json({ error: "Wallet address is required" });
-      }
-  
-      // Validate wallet address
-      try {
-        new PublicKey(walletAddress);
-      } catch (error) {
-        return res.status(400).json({ error: "Invalid wallet address" });
-      }
-  
-      // Check if user exists, if not create a new one
-      let user = await getUserByWallet(walletAddress);
-      if (!user) {
-        const nonce = uuidv4();
-        user = await prisma.user.create({
-          data: {
-            wallet: walletAddress,
-            nonce,
-          },
-        });
-      }
-  
-      res.json({ nonce: user.nonce });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to request token" });
+router.get("/challenge/:walletAddress", async (req, res) => {
+  try {
+    const { walletAddress } = req.params;
+    if (!walletAddress) {
+      return res.status(400).json({ error: "Wallet address is required" });
     }
-  });
+
+    // Validate wallet address
+    try {
+      new PublicKey(walletAddress);
+    } catch (error) {
+      return res.status(400).json({ error: "Invalid wallet address" });
+    }
+
+    // Check if user exists, if not create a new one
+    let user = await getUserByWallet(walletAddress);
+    if (!user) {
+      const nonce = uuidv4();
+      user = await prisma.user.create({
+        data: {
+          wallet: walletAddress,
+          nonce,
+        },
+      });
+    }
+
+    // The message the user will sign
+    const message = `${user.nonce}`;
+
+    // Return both nonce and message, as the frontend expects
+    res.json({ nonce: user.nonce, message });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to get challenge" });
+  }
+});
   
   // Login with signed nonce
   router.post("/login", async (req, res) => {
