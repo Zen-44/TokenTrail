@@ -119,7 +119,8 @@ app.post("/auth/verify", async (req, res) => {
   }
 
   // generate JWT
-  const token = jwt.sign({ wallet }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+  const isAdmin = user.isAdmin;
+  const token = jwt.sign({ wallet, isAdmin }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 
   res.json({ token });
 });
