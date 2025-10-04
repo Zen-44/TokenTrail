@@ -73,8 +73,21 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
         return res.status(401).json({ error: "Authentication required" });
     }
 
-    const festivalId = parseInt(req.params.id);
-    if (isNaN(festivalId)) {
+    let festivalId: number | undefined;
+
+    if (req.body.festivalId) {
+        festivalId = req.body.festivalId;
+    } else if (req.params.id) {
+        const questId = parseInt(req.params.id);
+        if (!isNaN(questId)) {
+            const quest = await prisma.quest.findUnique({ where: { id: questId } });
+            if (quest) {
+                festivalId = quest.festivalId;
+            }
+        }
+    }
+
+    if (!festivalId) {
         return res.status(400).json({ error: "Invalid festival ID" });
     }
 
