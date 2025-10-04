@@ -75,14 +75,24 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
 
     let festivalId: number | undefined;
 
-    if (req.body.festivalId) {
+    if (req.params.festivalId) {
+        festivalId = parseInt(req.params.festivalId, 10);
+    } else if (req.body.festivalId) {
         festivalId = req.body.festivalId;
     } else if (req.params.id) {
-        const questId = parseInt(req.params.id);
+        const questId = parseInt(req.params.id, 10);
         if (!isNaN(questId)) {
             const quest = await prisma.quest.findUnique({ where: { id: questId } });
-            if (quest) {
+            if (quest) { // Check if quest exists before accessing it
                 festivalId = quest.festivalId;
+            }
+        }
+    } else if (req.params.stepId) {
+        const stepId = parseInt(req.params.stepId, 10);
+        if (!isNaN(stepId)) {
+            const step = await prisma.step.findUnique({ where: { id: stepId }, include: { quest: true } });
+            if (step) {
+                festivalId = step.quest.festivalId;
             }
         }
     }

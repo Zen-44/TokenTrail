@@ -75,3 +75,36 @@ export async function deleteQuest(id: number) {
         });
     });
 }
+
+export async function getStepsForQuest(questId: number) {
+    return prisma.step.findMany({
+        where: { questId },
+        orderBy: { order: 'asc' }
+    });
+}
+
+export async function updateStepProgress(stepId: number, wallet: string, completed: boolean) {
+    const user = await prisma.user.findUnique({ where: { wallet } });
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    return prisma.stepProgress.upsert({
+        where: {
+            userId_stepId: {
+                userId: user.id,
+                stepId: stepId
+            }
+        },
+        update: {
+            completed: completed
+        },
+        create: {
+            userId: user.id,
+            stepId: stepId,
+            completed: completed
+        }
+    });
+}
+
+

@@ -1,6 +1,7 @@
 import express from "express";
 import { addEditor, removeEditor, getEditors, updateOwnFestival } from "../services/festivals.js";
-import { authMiddleware, adminMiddleware, organizerMiddleware, festivalOrganizerMiddleware } from "../middlewares.js";
+import { getQuestsByFestivalId, getUserByWallet } from "../services/db.js";
+import { authMiddleware, adminMiddleware, organizerMiddleware, festivalOrganizerMiddleware, festivalEditorMiddleware } from "../middlewares.js";
 
 const router = express.Router();
 
@@ -54,6 +55,30 @@ router.put("/:id/organizer", authMiddleware, festivalOrganizerMiddleware, async 
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to update festival" });
+    }
+});
+
+// Get user progress for a festival
+router.get("/:festivalId/progress/:userWallet", authMiddleware, festivalEditorMiddleware, async (req, res) => {
+    try {
+        const festivalId = parseInt(req.params.festivalId);
+        const userWallet = req.params.userWallet;
+
+        const user = await getUserByWallet(userWallet);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        if (isNaN(festivalId)) {
+            return res.status(400).json({ error: "Invalid festival ID" });
+        }
+
+        const quests = await getQuestsByFestivalId(festivalId, user.id);
+        res.json({ quests });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch user progress" });
     }
 });
 

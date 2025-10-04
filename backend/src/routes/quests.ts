@@ -1,5 +1,5 @@
 import express from "express";
-import { createQuest, updateQuest, deleteQuest } from "../services/quests.js";
+import { createQuest, updateQuest, deleteQuest, updateStepProgress } from "../services/quests.js";
 import { authMiddleware, festivalEditorMiddleware } from "../middlewares.js";
 
 const router = express.Router();
@@ -36,6 +36,28 @@ router.delete("/:id", authMiddleware, festivalEditorMiddleware, async (req, res)
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to delete quest" });
+    }
+});
+
+// Mark a step as complete or incomplete for a given wallet
+router.post("/steps/:stepId/progress", authMiddleware, festivalEditorMiddleware, async (req, res) => {
+    try {
+        const stepId = parseInt(req.params.stepId);
+        const { wallet, completed } = req.body;
+
+        if (!wallet || typeof completed !== 'boolean') {
+            return res.status(400).json({ error: "Missing wallet or completed status" });
+        }
+
+        const progress = await updateStepProgress(stepId, wallet, completed);
+        res.json(progress);
+    } catch (error) {
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Failed to update step progress" });
+        }
     }
 });
 

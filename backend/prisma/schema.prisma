@@ -94,6 +94,8 @@ model QuestProgress {
 
   completed Boolean  @default(false)
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, questId])
 }
 
 model StepProgress {
@@ -106,6 +108,8 @@ model StepProgress {
 
   completed Boolean  @default(false)
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, stepId])
 }
 
 model FestivalEditor {
