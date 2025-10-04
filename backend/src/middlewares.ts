@@ -15,6 +15,7 @@ export function authMiddleware(req: express.Request, res: express.Response, next
     const authHeader = req.headers.authorization;
     // if (!authHeader) return res.status(401).json({ error: "No token" });
     if (!authHeader){
+      console.log("No auth header, using temporary user");
       req.user = { id: 1, wallet: "4HyurZ5ST7ZqiWK16fYfaBRXSxrpjJQfXje34TwHgbqC" }; // TEMPORARY
       next();
       return;
@@ -25,51 +26,61 @@ export function authMiddleware(req: express.Request, res: express.Response, next
       const decoded = jwt.verify(token, process.env.JWT_SECRET!);
       req.user = decoded;
       next();
-    } catch {
+    } catch(e) {
+      console.error("Invalid token", e);
       return res.status(403).json({ error: "Invalid token" });
     }
   }
   
 export async function adminMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.user) {
+      console.error("Authentication required for adminMiddleware");
       return res.status(401).json({ error: "Authentication required" });
     }
   
     try {
-      const user = await getUserByWallet(req.user.wallet);
+      const user = await getUserByWallet(req.user.walletAddress);
       if (!user || !user.isAdmin) {
+        console.warn(`Admin access denied for user: ${req.user.walletAddress}`);
         return res.status(403).json({ error: "Admin access required" });
       }
       next();
     } catch (error) {
+      console.error("Error in adminMiddleware:", error);
       return res.status(500).json({ error: "Failed to verify admin status" });
     }
   }
 
 export async function organizerMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.user) {
+        console.error("Authentication required for organizerMiddleware");
         return res.status(401).json({ error: "Authentication required" });
     }
 
     try {
-        const user = await getUserByWallet(req.user.wallet);
+        const user = await getUserByWallet(req.user.walletAddress);
         if (user && user.isAdmin) {
+            console.log("User is admin, granting organizer access.");
             next();
             return;
         }
-        const festival = await getFestivalById(req.body.festivalId);
-        const isOrganizer = festival && festival.wallet == req.user.wallet;
+        const festivalId = req.body.festivalId;
+        const festival = await getFestivalById(festivalId);
+        const isOrganizer = festival && festival.wallet == req.user.walletAddress;
         if (!user || !festival || !isOrganizer) {
+            console.warn(`Organizer access denied for user ${req.user.walletAddress} on festival ${festivalId}`);
             return res.status(403).json({ error: "Organizer access required" });
         }
         next();
     } catch (error) {
+        console.error("Error in organizerMiddleware:", error);
         return res.status(500).json({ error: "Failed to verify organizer status" });
     }
 }
 
 export async function festivalEditorMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.user) {
+        console.error("Authentication required for festivalEditorMiddleware");
         return res.status(401).json({ error: "Authentication required" });
     }
 
@@ -97,13 +108,15 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
         }
     }
 
+
     if (!festivalId) {
         return res.status(400).json({ error: "Invalid festival ID" });
     }
 
     try {
-        const user = await getUserByWallet(req.user.wallet);
+        const user = await getUserByWallet(req.user.walletAddress);
         if (!user) {
+            console.warn(`User not found: ${req.user.walletAddress}`);
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -129,14 +142,17 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
             return next();
         }
 
+        console.warn(`Editor access denied for user ${user.wallet} on festival ${festivalId}`);
         return res.status(403).json({ error: "You do not have permission to edit this festival's quests." });
     } catch (error) {
+        console.error("Error in festivalEditorMiddleware:", error);
         return res.status(500).json({ error: "Failed to verify editor status" });
     }
 }
 
 export async function festivalOrganizerMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.user) {
+        console.error("Authentication required for festivalOrganizerMiddleware");
         return res.status(401).json({ error: "Authentication required" });
     }
 
@@ -146,8 +162,9 @@ export async function festivalOrganizerMiddleware(req: express.Request, res: exp
     }
 
     try {
-        const user = await getUserByWallet(req.user.wallet);
+        const user = await getUserByWallet(req.user.walletAddress);
         if (!user) {
+            console.warn(`User not found: ${req.user.walletAddress}`);
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -160,8 +177,10 @@ export async function festivalOrganizerMiddleware(req: express.Request, res: exp
             return next();
         }
 
+        console.warn(`Organizer access denied for user ${user.wallet} on festival ${festivalId}`);
         return res.status(403).json({ error: "You do not have permission to edit this festival." });
     } catch (error) {
+        console.error("Error in festivalOrganizerMiddleware:", error);
         return res.status(500).json({ error: "Failed to verify organizer status" });
     }
 }

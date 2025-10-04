@@ -40,7 +40,7 @@ router.delete("/:id", authMiddleware, festivalEditorMiddleware, async (req, res)
 });
 
 // Mark a step as complete or incomplete for a given wallet
-router.post("/steps/:stepId/progress", authMiddleware, festivalEditorMiddleware, async (req, res) => {
+router.post("/:questId/steps/:stepId/progress", authMiddleware, festivalEditorMiddleware, async (req, res) => {
     try {
         const stepId = parseInt(req.params.stepId);
         const { wallet, completed } = req.body;
