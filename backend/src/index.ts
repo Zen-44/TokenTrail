@@ -14,6 +14,7 @@ import { addFestival, getFestivals, getAllFestivals, updateFestivalApproval, get
 import { getQuestsByFestivalId } from "./services/db.js";
 import { createToken } from "./services/solana.js";
 import questRoutes from "./routes/quests.js";
+import festivalRoutes from "./routes/festivals.js";
 import { authMiddleware, adminMiddleware } from "./middlewares.js";
 
 import { v4 as uuidv4 } from "uuid";
@@ -40,6 +41,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/api/quests", questRoutes);
+app.use("/api/festivals", festivalRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello"});

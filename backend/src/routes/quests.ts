@@ -1,11 +1,11 @@
 import express from "express";
 import { createQuest, updateQuest, deleteQuest } from "../services/quests.js";
-import { authMiddleware, adminMiddleware, organizerMiddleware } from "../middlewares.js";
+import { authMiddleware, festivalEditorMiddleware } from "../middlewares.js";
 
 const router = express.Router();
 
 // Create a new quest
-router.post("/", authMiddleware, organizerMiddleware, async (req, res) => {
+router.post("/", authMiddleware, festivalEditorMiddleware, async (req, res) => {
     try {
         const quest = await createQuest(req.body);
         res.status(201).json(quest);
@@ -16,7 +16,7 @@ router.post("/", authMiddleware, organizerMiddleware, async (req, res) => {
 });
 
 // Update a quest
-router.put("/:id", authMiddleware, organizerMiddleware, async (req, res) => {
+router.put("/:id", authMiddleware, festivalEditorMiddleware, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const quest = await updateQuest(id, req.body);
@@ -28,7 +28,7 @@ router.put("/:id", authMiddleware, organizerMiddleware, async (req, res) => {
 });
 
 // Delete a quest
-router.delete("/:id", authMiddleware, organizerMiddleware, async (req, res) => {
+router.delete("/:id", authMiddleware, festivalEditorMiddleware, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         await deleteQuest(id);
