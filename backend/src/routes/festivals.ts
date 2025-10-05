@@ -187,7 +187,9 @@ router.post("/:id/generate-token", authMiddleware, adminMiddleware, async (req, 
         // Load the logo
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-        const logoPath = path.join(__dirname, '..', 'src', 'logo.png');
+        // Go up directories to find the project root from the current file location
+        const projectRoot = path.resolve(__dirname, '..', '..');
+        const logoPath = path.join(projectRoot, 'src', 'logo.png');
         const logoBuffer = fs.readFileSync(logoPath);
 
         // Generate the token on Solana Devnet
