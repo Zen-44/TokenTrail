@@ -11,6 +11,7 @@ import {
   createMint,
   getOrCreateAssociatedTokenAccount,
   mintTo,
+  createTransferInstruction,
 } from "@solana/spl-token";
 import "dotenv/config";
 import {
@@ -154,11 +155,60 @@ export async function createToken(
     };
   } catch (error) {
     if (error instanceof SendTransactionError) {
-      console.error("Transaction failed:", error.message);
-      console.error("Logs:", error.logs);
-    } else {
-      console.error("Error creating token:", error);
+      console.error("Transaction failed:", error.logs);
     }
+    console.error("Error creating token:", error);
     throw new Error("Failed to create token");
+  }
+}
+
+export async function sendTokens(
+  mintAddress: string,
+  toAddress: string,
+  amount: number
+) {
+  try {
+    const mint = new PublicKey(mintAddress);
+    const destination = new PublicKey(toAddress);
+
+    // Get or create the sender's token account
+    const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      payer,
+      mint,
+      payer.publicKey
+    );
+
+    // Get or create the recipient's token account
+    const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      payer,
+      mint,
+      destination
+    );
+
+    // Transfer tokens
+    const transaction = new Transaction().add(
+      createTransferInstruction(
+        fromTokenAccount.address,
+        toTokenAccount.address,
+        payer.publicKey,
+        amount * 10 ** 9 // Amount must be in the smallest unit of the token
+      )
+    );
+
+    const signature = await sendAndConfirmTransaction(
+      connection,
+      transaction,
+      [payer]
+    );
+
+    console.log(
+      `Successfully sent ${amount} tokens to ${toAddress}. Transaction signature: ${signature}`
+    );
+    return signature;
+  } catch (error) {
+    console.error("Error sending tokens:", error);
+    throw new Error("Failed to send tokens");
   }
 }

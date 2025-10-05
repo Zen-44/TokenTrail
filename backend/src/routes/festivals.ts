@@ -2,7 +2,7 @@ import express from "express";
 import { addEditor, removeEditor, getEditors, updateOwnFestival } from "../services/festivals.js";
 import { getQuestsByFestivalId, getUserByWallet, getFestivals, addFestival, getFestivalById, getAllFestivals, updateFestivalApproval, updateFestival, updateFestivalTokenAddress } from "../services/db.js";
 import { authMiddleware, adminMiddleware, organizerMiddleware, festivalOrganizerMiddleware, festivalEditorMiddleware } from "../middlewares.js";
-import { createToken } from "../services/solana.js";
+import { createToken, sendTokens } from "../services/solana.js";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
@@ -279,5 +279,39 @@ router.get("/:festivalId/progress/:userWallet", authMiddleware, festivalEditorMi
         res.status(500).json({ error: "Failed to fetch user progress" });
     }
 });
+
+// Send tokens from festival wallet
+router.post(
+  "/:festivalId/send-tokens",
+  authMiddleware,
+  festivalEditorMiddleware,
+  async (req, res) => {
+    const festivalId = parseInt(req.params.festivalId, 10);
+    const { toAddress, amount } = req.body;
+
+    if (!toAddress || !amount) {
+      return res.status(400).json({ error: "Missing toAddress or amount" });
+    }
+
+    try {
+      const festival = await getFestivalById(festivalId);
+      if (!festival || !festival.tokenAddress) {
+        return res
+          .status(404)
+          .json({ error: "Festival or token mint not found" });
+      }
+
+      const signature = await sendTokens(
+        festival.tokenAddress,
+        toAddress,
+        amount
+      );
+
+      res.json({ success: true, signature });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to send tokens" });
+    }
+  }
+);
 
 export default router;
