@@ -28,10 +28,10 @@ router.put("/:id", authMiddleware, canEditFestival, async (req, res) => {
 });
 
 // Delete a quest
-router.delete("/:id", authMiddleware, canEditFestival, async (req, res) => {
+router.delete("/:questId", authMiddleware, canEditFestival, async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        await deleteQuest(id);
+        const questId = parseInt(req.params.questId);
+        await deleteQuest(questId);
         res.status(204).send();
     } catch (error) {
         console.error(error);

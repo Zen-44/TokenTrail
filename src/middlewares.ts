@@ -92,13 +92,26 @@ export async function canEditFestival(req: express.Request, res: express.Respons
     }
 
     let festivalId: number | undefined;
-
     if (req.params.festivalId) {
         festivalId = parseInt(req.params.festivalId, 10);
     } else if (req.body.festivalId) {
         festivalId = req.body.festivalId;
+    } else if (req.params.questId) {
+        const questId = parseInt(req.params.questId, 10);
+        if (!isNaN(questId)) {
+            const quest = await prisma.quest.findUnique({ where: { id: questId } });
+            if (quest) {
+                festivalId = quest.festivalId;
+            }
+        }
     } else if (req.params.id) {
-        festivalId = parseInt(req.params.id, 10);
+        const questId = parseInt(req.params.id, 10);
+        if (!isNaN(questId)) {
+            const quest = await prisma.quest.findUnique({ where: { id: questId } });
+            if (quest) {
+                festivalId = quest.festivalId;
+            }
+        }
     }
 
     if (!festivalId) {
