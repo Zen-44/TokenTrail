@@ -187,7 +187,7 @@ router.post("/:id/generate-token", authMiddleware, adminMiddleware, async (req, 
         // Load the logo
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-        // Go up directories to find the project root from the current file location
+        // Go up directories to find the project root from the current file location 
         const projectRoot = path.resolve(__dirname, '..', '..');
         const logoPath = path.join(projectRoot, 'src', 'logo.png');
         const logoBuffer = fs.readFileSync(logoPath);
