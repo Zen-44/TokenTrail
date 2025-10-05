@@ -2,6 +2,9 @@ import { Prisma, PrismaClient } from "../../generated/prisma/client.js";
 
 const prisma = new PrismaClient();
 
+export default prisma;
+
+
 
 export async function getFestivals() {
   return prisma.festival.findMany({
@@ -67,6 +70,7 @@ export async function updateFestivalTokenAddress(festivalId: number, tokenAddres
   });
 }
 
+// ... existing code
 export async function updateFestival(festivalId: number, data: Prisma.FestivalUpdateInput) {
   return prisma.festival.update({
     where: { id: festivalId },
@@ -74,4 +78,3 @@ export async function updateFestival(festivalId: number, data: Prisma.FestivalUp
   });
 }
 
-export default prisma;

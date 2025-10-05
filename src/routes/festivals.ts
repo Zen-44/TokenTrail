@@ -1,7 +1,7 @@
 import express from "express";
 import { addEditor, removeEditor, getEditors, updateOwnFestival } from "../services/festivals.js";
 import { getQuestsByFestivalId, getUserByWallet, getFestivals, addFestival, getFestivalById, getAllFestivals, updateFestivalApproval, updateFestival, updateFestivalTokenAddress } from "../services/db.js";
-import { authMiddleware, adminMiddleware, organizerMiddleware, festivalOrganizerMiddleware, festivalEditorMiddleware } from "../middlewares.js";
+import { authMiddleware, adminMiddleware, organizerMiddleware, festivalOrganizerMiddleware, canEditFestival } from "../middlewares.js";
 import { createToken, sendTokens } from "../services/solana.js";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -259,7 +259,7 @@ router.put("/:id/organizer", authMiddleware, festivalOrganizerMiddleware, async 
 });
 
 // Get user progress for a festival
-router.get("/:festivalId/progress/:userWallet", authMiddleware, festivalEditorMiddleware, async (req, res) => {
+router.get("/:festivalId/progress/:userWallet", authMiddleware, canEditFestival, async (req, res) => {
     try {
         const festivalId = parseInt(req.params.festivalId);
         const userWallet = req.params.userWallet;
@@ -286,7 +286,7 @@ router.get("/:festivalId/progress/:userWallet", authMiddleware, festivalEditorMi
 router.post(
   "/:festivalId/send-tokens",
   authMiddleware,
-  festivalEditorMiddleware,
+  canEditFestival,
   async (req, res) => {
     const festivalId = parseInt(req.params.festivalId, 10);
     const { toAddress, amount } = req.body;

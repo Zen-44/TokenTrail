@@ -40,6 +40,7 @@ model Festival {
   // back-relations
   quests   Quest[]
   editors  FestivalEditor[]
+  rewards  Reward[]
 }
 
 model Quest {
@@ -82,6 +83,7 @@ model User {
   questProgress QuestProgress[]
   stepProgress  StepProgress[]
   festivalsAsEditor FestivalEditor[]
+  claims        RewardClaim[]
 }
 
 model QuestProgress {
@@ -121,6 +123,60 @@ model FestivalEditor {
   createdAt   DateTime @default(now())
 
   @@unique([festivalId, userId])
+}
+
+enum RewardCategory {
+  Merchandise
+  FoodAndDrinks
+  Electronics
+  Experiences
+}
+
+enum RewardTag {
+  Limited
+  Common
+  Rare
+  Premium
+}
+
+model Reward {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  price       Int
+  location    String
+  stock       Int
+  image       String
+  category    RewardCategory
+  tag         RewardTag
+
+  festival    Festival       @relation(fields: [festivalId], references: [id])
+  festivalId  Int
+
+  claims      RewardClaim[]
+}
+
+enum RewardClaimStatus {
+  PENDING
+  PROCESSING
+  PROCESSED
+  DECLINED
+}
+
+model RewardClaim {
+  id           Int               @id @default(autoincrement())
+  nonce        String            @unique
+  transaction  String?
+  status       RewardClaimStatus @default(PENDING)
+  claimCode    String?           @unique
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  reward       Reward            @relation(fields: [rewardId], references: [id])
+  rewardId     Int
+
+  user         User              @relation(fields: [userId], references: [id])
+  userId       Int
 }
 
 

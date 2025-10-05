@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 import questRoutes from "./routes/quests.js";
 import festivalRoutes from "./routes/festivals.js";
 import authRoutes from "./routes/auth.js";
+import rewardRoutes from "./routes/rewards.js";
+import claimRoutes from "./routes/claims.js";
 
 // Monkey patch BigInt to allow JSON serialization
 (BigInt.prototype as any).toJSON = function () {
@@ -33,6 +35,8 @@ app.use(bodyParser.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/quests", questRoutes);
 app.use("/api/festivals", festivalRoutes);
+app.use("/api/rewards", rewardRoutes);
+app.use("/api/claims", claimRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello"});

@@ -85,9 +85,9 @@ export async function organizerMiddleware(req: express.Request, res: express.Res
     }
 }
 
-export async function festivalEditorMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+export async function canEditFestival(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.user) {
-        console.error("Authentication required for festivalEditorMiddleware");
+        console.error("Authentication required for canEditFestival");
         return res.status(401).json({ error: "Authentication required" });
     }
 
@@ -98,65 +98,86 @@ export async function festivalEditorMiddleware(req: express.Request, res: expres
     } else if (req.body.festivalId) {
         festivalId = req.body.festivalId;
     } else if (req.params.id) {
-        const questId = parseInt(req.params.id, 10);
-        if (!isNaN(questId)) {
-            const quest = await prisma.quest.findUnique({ where: { id: questId } });
-            if (quest) { // Check if quest exists before accessing it
-                festivalId = quest.festivalId;
+        festivalId = parseInt(req.params.id, 10);
+    }
+
+    if (!festivalId) {
+        // If no festivalId is found directly, try to find it from the quest or step
+        if (req.params.id) {
+            const questId = parseInt(req.params.id, 10);
+            if (!isNaN(questId)) {
+                const quest = await prisma.quest.findUnique({ where: { id: questId } });
+                if (quest) {
+                    festivalId = quest.festivalId;
+                }
             }
-        }
-    } else if (req.params.stepId) {
-        const stepId = parseInt(req.params.stepId, 10);
-        if (!isNaN(stepId)) {
-            const step = await prisma.step.findUnique({ where: { id: stepId }, include: { quest: true } });
-            if (step) {
-                festivalId = step.quest.festivalId;
+        } else if (req.params.stepId) {
+            const stepId = parseInt(req.params.stepId, 10);
+            if (!isNaN(stepId)) {
+                const step = await prisma.step.findUnique({ where: { id: stepId }, include: { quest: true } });
+                if (step) {
+                    festivalId = step.quest.festivalId;
+                }
+            }
+        } else if (req.params.rewardId) {
+            const rewardId = parseInt(req.params.rewardId, 10);
+            if (!isNaN(rewardId)) {
+                const reward = await prisma.reward.findUnique({ where: { id: rewardId } });
+                if (reward) {
+                    festivalId = reward.festivalId;
+                }
             }
         }
     }
 
-
     if (!festivalId) {
-        return res.status(400).json({ error: "Invalid festival ID" });
+        return res.status(400).json({ error: "Festival ID is required" });
     }
 
     try {
         const walletAddress = req.user.walletAddress || req.user.wallet;
         const user = await getUserByWallet(walletAddress);
+
         if (!user) {
-            console.warn(`User not found: ${walletAddress}`);
             return res.status(404).json({ error: "User not found" });
         }
 
-        if (user.isAdmin) {
-            return next();
-        }
-
-        const festival = await getFestivalById(festivalId);
-        if (festival?.wallet === user.wallet) {
-            return next();
+        if (user && user.isAdmin) {
+            console.log("User is admin, granting edit access.");
+            next();
+            return;
         }
 
         const editor = await prisma.festivalEditor.findUnique({
             where: {
                 festivalId_userId: {
-                    festivalId,
+                    festivalId: festivalId,
                     userId: user.id,
                 },
             },
         });
 
         if (editor) {
-            return next();
+            next();
+            return;
         }
 
-        console.warn(`Editor access denied for user ${user.wallet} on festival ${festivalId}`);
-        return res.status(403).json({ error: "You do not have permission to edit this festival's quests." });
+        const festival = await getFestivalById(festivalId);
+        const isOrganizer = festival && festival.wallet == walletAddress;
+
+        if (!isOrganizer) {
+            console.warn(`Edit access denied for user ${walletAddress} on festival ${festivalId}`);
+            return res.status(403).json({ error: "You do not have permission to edit this festival" });
+        }
+
+        next();
     } catch (error) {
-        console.error("Error in festivalEditorMiddleware:", error);
+        console.error("Error in canEditFestival middleware:", error);
         return res.status(500).json({ error: "Failed to verify editor status" });
     }
 }
+
+
 
 export async function festivalOrganizerMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.user) {
