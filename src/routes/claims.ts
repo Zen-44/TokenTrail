@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/initiate', authMiddleware, async (req, res) => {
     const { rewardId } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     if (!rewardId) {
         return res.status(400).json({ error: 'Missing rewardId' });
@@ -23,7 +23,7 @@ router.post('/initiate', authMiddleware, async (req, res) => {
 
 router.post('/verify', authMiddleware, async (req, res) => {
     const { transaction, nonce } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     if (!transaction || !nonce) {
         return res.status(400).json({ error: 'Missing transaction or nonce' });

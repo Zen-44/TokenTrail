@@ -164,19 +164,20 @@ enum RewardClaimStatus {
 }
 
 model RewardClaim {
-  id           Int               @id @default(autoincrement())
-  nonce        String            @unique
-  transaction  String?
-  status       RewardClaimStatus @default(PENDING)
-  claimCode    String?           @unique
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id            Int               @id @default(autoincrement())
+  nonce         String            @unique
+  transaction   String?
+  status        RewardClaimStatus @default(PENDING)
+  claimCode     String?           @unique
+  claimCodeUsed Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
-  reward       Reward            @relation(fields: [rewardId], references: [id])
-  rewardId     Int
+  reward        Reward            @relation(fields: [rewardId], references: [id])
+  rewardId      Int
 
-  user         User              @relation(fields: [userId], references: [id])
-  userId       Int
+  user          User              @relation(fields: [userId], references: [id])
+  userId        Int
 }
 
 

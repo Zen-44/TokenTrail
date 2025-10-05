@@ -96,6 +96,15 @@ async function verifyTransactionInBackground(claim: any, transaction: string) {
                             if (isMintCorrect && burnAmount >= requiredBurnAmountWithDecimals) {
                                 isVerified = true;
                                 console.log(`[Claim ${claim.id}] Burn verification successful (Required: >=${requiredBurnAmountWithDecimals}, Burned: ${burnAmount})`);
+
+                                const reward = await prisma.reward.findUnique({ where: { id: claim.reward.id } });
+                                if (reward && reward.stock > 0) {
+                                    await prisma.reward.update({
+                                        where: { id: claim.reward.id },
+                                        data: { stock: { decrement: 1 } },
+                                    });
+                                    // console.log(`[Claim ${claim.id}] Reward stock decremented. New stock: ${reward.stock - 1}`);
+                                }
                             } else {
                                 console.log(`[Claim ${claim.id}] Burn verification failed. Conditions not met.`);
                             }
