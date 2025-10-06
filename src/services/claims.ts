@@ -160,6 +160,30 @@ export async function getClaimsByUserId(userId: number) {
     });
 }
 
+export async function getClaimByClaimCode(claimCode: string) {
+    const claim = await prisma.rewardClaim.findUnique({
+        where: { claimCode },
+        include: {
+            reward: {
+                include: { festival: true }
+            },
+            user: {
+                select: {
+                    id: true,
+                    wallet: true,
+                    // Don't include sensitive information
+                }
+            },
+        },
+    });
+
+    if (!claim) {
+        throw new Error('Claim code not found');
+    }
+
+    return claim;
+}
+
 export async function markClaimCodeAsUsed(claimCode: string) {
     // First find the claim and verify it exists and is in PROCESSED state
     const claim = await prisma.rewardClaim.findUnique({

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { initiateClaim, verifyClaim, getClaimsByUserId, markClaimCodeAsUsed } from '../services/claims.js';
+import { initiateClaim, verifyClaim, getClaimsByUserId, markClaimCodeAsUsed, getClaimByClaimCode } from '../services/claims.js';
 import { authMiddleware, canEditFestival } from '../middlewares.js';
 import prisma from '../services/db.js';
 
@@ -80,6 +80,23 @@ async function extractFestivalFromClaimCode(req: any, res: any, next: any) {
         res.status(500).json({ error: 'Failed to process claim code' });
     }
 }
+
+router.get('/:claimCode', authMiddleware, extractFestivalFromClaimCode, canEditFestival, async (req, res) => {
+    const { claimCode } = req.params;
+
+    try {
+        const claim = await getClaimByClaimCode(claimCode);
+        res.json(claim);
+    } catch (error) {
+        console.error('Error getting claim by claim code:', error);
+        
+        if (error instanceof Error && error.message === 'Claim code not found') {
+            return res.status(404).json({ error: error.message });
+        }
+        
+        res.status(500).json({ error: 'Failed to get claim' });
+    }
+});
 
 router.put('/:claimCode/mark-used', authMiddleware, extractFestivalFromClaimCode, canEditFestival, async (req, res) => {
     const { claimCode } = req.params;
