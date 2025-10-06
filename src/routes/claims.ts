@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { initiateClaim, verifyClaim, getClaimsByUserId } from '../services/claims.js';
-import { authMiddleware } from '../middlewares.js';
+import { initiateClaim, verifyClaim, getClaimsByUserId, markClaimCodeAsUsed } from '../services/claims.js';
+import { authMiddleware, canEditFestival } from '../middlewares.js';
+import prisma from '../services/db.js';
 
 const router = Router();
 
@@ -47,6 +48,63 @@ router.get('/my-claims', authMiddleware, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to get claims' });
+    }
+});
+
+// Middleware to extract festival ID from claim code and add it to req.body for canEditFestival
+async function extractFestivalFromClaimCode(req: any, res: any, next: any) {
+    const { claimCode } = req.params;
+    
+    if (!claimCode) {
+        return res.status(400).json({ error: 'Claim code is required' });
+    }
+
+    try {
+        const claim = await prisma.rewardClaim.findUnique({
+            where: { claimCode },
+            include: { reward: true },
+        });
+
+        if (!claim) {
+            return res.status(404).json({ error: 'Claim code not found' });
+        }
+
+        // Ensure req.body exists and add festivalId so canEditFestival middleware can use it
+        if (!req.body) {
+            req.body = {};
+        }
+        req.body.festivalId = claim.reward.festivalId;
+        next();
+    } catch (error) {
+        console.error('Error extracting festival from claim code:', error);
+        res.status(500).json({ error: 'Failed to process claim code' });
+    }
+}
+
+router.put('/:claimCode/mark-used', authMiddleware, extractFestivalFromClaimCode, canEditFestival, async (req, res) => {
+    const { claimCode } = req.params;
+
+    try {
+        const updatedClaim = await markClaimCodeAsUsed(claimCode);
+        res.json({
+            message: 'Claim code marked as used successfully',
+            claim: updatedClaim,
+        });
+    } catch (error) {
+        console.error('Error marking claim code as used:', error);
+        
+        // Handle specific error types
+        if (error instanceof Error) {
+            if (error.message === 'Claim code not found') {
+                return res.status(404).json({ error: error.message });
+            }
+            if (error.message === 'Claim code is not in processed state' || 
+                error.message === 'Claim code has already been marked as used') {
+                return res.status(400).json({ error: error.message });
+            }
+        }
+        
+        res.status(500).json({ error: 'Failed to mark claim code as used' });
     }
 });
 

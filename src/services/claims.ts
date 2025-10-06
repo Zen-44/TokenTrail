@@ -159,3 +159,41 @@ export async function getClaimsByUserId(userId: number) {
         },
     });
 }
+
+export async function markClaimCodeAsUsed(claimCode: string) {
+    // First find the claim and verify it exists and is in PROCESSED state
+    const claim = await prisma.rewardClaim.findUnique({
+        where: { claimCode },
+        include: { 
+            reward: { 
+                include: { festival: true } 
+            } 
+        },
+    });
+
+    if (!claim) {
+        throw new Error('Claim code not found');
+    }
+
+    if (claim.status !== 'PROCESSED') {
+        throw new Error('Claim code is not in processed state');
+    }
+
+    if (claim.claimCodeUsed) {
+        throw new Error('Claim code has already been marked as used');
+    }
+
+    // Mark the claim code as used
+    const updatedClaim = await prisma.rewardClaim.update({
+        where: { id: claim.id },
+        data: { claimCodeUsed: true },
+        include: {
+            reward: {
+                include: { festival: true }
+            },
+            user: true,
+        },
+    });
+
+    return updatedClaim;
+}
