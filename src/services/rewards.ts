@@ -53,8 +53,25 @@ export const updateReward = async (req: Request, res: Response) => {
 
 export const deleteReward = async (req: Request, res: Response) => {
     const { rewardId } = req.params;
-    await db.reward.delete({
-        where: { id: parseInt(rewardId) },
-    });
-    res.sendStatus(204);
+    const parsedRewardId = parseInt(rewardId);
+
+    try {
+        // Use a transaction to ensure both operations complete or neither does
+        await db.$transaction(async (tx) => {
+            // First delete all associated reward claims
+            await tx.rewardClaim.deleteMany({
+                where: { rewardId: parsedRewardId }
+            });
+
+            // Then delete the reward itself
+            await tx.reward.delete({
+                where: { id: parsedRewardId },
+            });
+        });
+
+        res.sendStatus(204);
+    } catch (error) {
+        console.error('Error deleting reward:', error);
+        res.status(500).json({ error: 'Failed to delete reward and its associated claims' });
+    }
 };

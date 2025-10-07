@@ -94,7 +94,7 @@ export async function canEditFestival(req: express.Request, res: express.Respons
     let festivalId: number | undefined;
     if (req.params.festivalId) {
         festivalId = parseInt(req.params.festivalId, 10);
-    } else if (req.body.festivalId) {
+    } else if (req.body && req.body.festivalId) {
         festivalId = req.body.festivalId;
     } else if (req.params.questId) {
         const questId = parseInt(req.params.questId, 10);
