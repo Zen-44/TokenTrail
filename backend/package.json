@@ -1,0 +1,50 @@
+{
+  "name": "tokentrail",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "prisma generate",
+    "build": "npm run generate && tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zen-44/TokenTrail.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zen-44/TokenTrail/issues"
+  },
+  "homepage": "https://github.com/Zen-44/TokenTrail#readme",
+  "dependencies": {
+    "@metaplex-foundation/js": "^0.20.1",
+    "@metaplex-foundation/mpl-token-metadata": "^2.13.0",
+    "@prisma/client": "^6.16.0",
+    "@solana/web3.js": "^1.98.4",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "@solana/spl-token": "^0.4.14",
+    "@types/async-retry": "^1.4.9",
+    "@types/bn.js": "^5.2.0",
+    "@types/cors": "^2.8.19",
+    "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.3.1",
+    "@types/node-fetch": "^2.6.13",
+    "dotenv": "^17.2.3",
+    "prisma": "^6.16.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  }
+}

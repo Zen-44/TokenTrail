@@ -1,0 +1,80 @@
+import { Prisma, PrismaClient } from "../../generated/prisma/client.js";
+
+const prisma = new PrismaClient();
+
+export default prisma;
+
+
+
+export async function getFestivals() {
+  return prisma.festival.findMany({
+    where: { approved: true },
+    orderBy: { createdAt: "desc" }
+  });
+}
+
+export async function getAllFestivals() {
+  return prisma.festival.findMany({
+    orderBy: { createdAt: "desc" }
+  });
+}
+
+export async function updateFestivalApproval(festivalId: number, approved: boolean) {
+  return prisma.festival.update({
+    where: { id: festivalId },
+    data: { approved }
+  });
+}
+
+export async function getUserByWallet(wallet: string) {
+  return prisma.user.findUnique({
+    where: { wallet }
+  });
+}
+
+export async function addFestival(data: Prisma.FestivalCreateInput) {
+  return prisma.festival.create({
+    data
+  });
+}
+
+export async function getQuestsByFestivalId(festivalId: number, userId: number) {
+	return prisma.quest.findMany({
+		where: { festivalId },
+		include: {
+			steps: {
+				orderBy: { order: "asc" },
+				include: {
+					progress: {
+						where: { userId },
+					},
+				},
+			},
+			progress: {
+				where: { userId },
+			},
+		},
+	});
+}
+
+export async function getFestivalById(festivalId: number) {
+  return prisma.festival.findUnique({
+    where: { id: festivalId },
+  });
+}
+
+export async function updateFestivalTokenAddress(festivalId: number, tokenAddress: string) {
+  return prisma.festival.update({
+    where: { id: festivalId },
+    data: { tokenAddress },
+  });
+}
+
+// ... existing code
+export async function updateFestival(festivalId: number, data: Prisma.FestivalUpdateInput) {
+  return prisma.festival.update({
+    where: { id: festivalId },
+    data,
+  });
+}
+
