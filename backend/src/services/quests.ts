@@ -1,4 +1,5 @@
 import { PrismaClient } from "../../generated/prisma/client.js";
+import { sendTokens } from './solana.js';
 const prisma = new PrismaClient();
 
 export async function createQuest(data: any) {
@@ -118,21 +119,111 @@ export async function updateStepProgress(stepId: number, wallet: string, complet
         throw new Error("User not found");
     }
 
-    return prisma.stepProgress.upsert({
-        where: {
-            userId_stepId: {
-                userId: user.id,
-                stepId: stepId
+    // Get the step information to find the associated quest
+    const step = await prisma.step.findUnique({
+        where: { id: stepId },
+        include: {
+            quest: {
+                include: {
+                    steps: true,
+                    festival: true
+                }
             }
-        },
-        update: {
-            completed: completed
-        },
-        create: {
-            userId: user.id,
-            stepId: stepId,
-            completed: completed
         }
+    });
+
+    if (!step) {
+        throw new Error("Step not found");
+    }
+
+    return prisma.$transaction(async (tx) => {
+        // Update the step progress
+        await tx.stepProgress.upsert({
+            where: {
+                userId_stepId: {
+                    userId: user.id,
+                    stepId: stepId
+                }
+            },
+            update: {
+                completed: completed
+            },
+            create: {
+                userId: user.id,
+                stepId: stepId,
+                completed: completed
+            }
+        });
+
+        if (completed) {
+            // Check if all steps are completed for this quest
+            const stepProgresses = await tx.stepProgress.findMany({
+                where: {
+                    userId: user.id,
+                    step: {
+                        questId: step.quest.id
+                    }
+                }
+            });
+
+            const allStepsCompleted = step.quest.steps.every(questStep =>
+                stepProgresses.some(progress =>
+                    progress.stepId === questStep.id && progress.completed
+                )
+            );
+
+            if (allStepsCompleted) {
+                // Check if user has already completed this quest
+                const existingProgress = await tx.questProgress.findUnique({
+                    where: {
+                        userId_questId: {
+                            userId: user.id,
+                            questId: step.quest.id
+                        }
+                    }
+                });
+
+                if (existingProgress?.completed) {
+                    console.log(`User ${user.wallet} has already completed quest ${step.quest.id}`);
+                    return true;
+                }
+
+                // Update quest progress to completed
+                await tx.questProgress.upsert({
+                    where: {
+                        userId_questId: {
+                            userId: user.id,
+                            questId: step.quest.id
+                        }
+                    },
+                    update: {
+                        completed: true
+                    },
+                    create: {
+                        userId: user.id,
+                        questId: step.quest.id,
+                        completed: true
+                    }
+                });
+
+                // Send the reward tokens to the user's wallet
+                if (step.quest.festival.tokenAddress) {
+                    try {
+                        await sendTokens(
+                            step.quest.festival.tokenAddress,
+                            user.wallet,
+                            step.quest.reward
+                        );
+                        console.log(`Sent ${step.quest.reward} tokens to ${user.wallet} for completing quest ${step.quest.id}`);
+                    } catch (error) {
+                        console.error('Failed to send tokens:', error);
+                        throw new Error('Failed to send reward tokens');
+                    }
+                }
+            }
+        }
+
+        return true;
     });
 }
 
