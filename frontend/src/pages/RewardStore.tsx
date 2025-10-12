@@ -47,11 +47,13 @@ import {
   getAssociatedTokenAddress,
 } from "@solana/spl-token";
 import { useAuth } from "@/contexts/AuthContext";
+import { getTokenBalance, getTokenMetadata } from "@/lib/solana";
 
 const RewardStore = () => {
   const { toast } = useToast();
   const { selectedFestival } = useFestival();
-  const [userTokens] = useState(1250); // This will likely come from a user context later
+  const [userTokens, setUserTokens] = useState<number>(0);
+  const [tokenMetadata, setTokenMetadata] = useState<{ symbol: string } | null>(null);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [userClaims, setUserClaims] = useState<UserClaim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,6 +82,8 @@ const RewardStore = () => {
         setIsLoading(false);
         setRewards([]);
         setUserClaims([]);
+        setUserTokens(0);
+        setTokenMetadata(null);
         return;
       }
 
@@ -92,6 +96,14 @@ const RewardStore = () => {
           parseInt(selectedFestival.id, 10)
         );
         setRewards(fetchedRewards);
+
+        // Load token balance and metadata if user is authenticated
+        if (walletAddress && selectedFestival.tokenAddress) {
+          const balance = await getTokenBalance(walletAddress, selectedFestival.tokenAddress);
+          const metadata = await getTokenMetadata(selectedFestival.tokenAddress);
+          setUserTokens(balance);
+          setTokenMetadata(metadata);
+        }
 
         // Load user claims if authenticated
         if (isAuthenticated) {
@@ -518,7 +530,7 @@ const RewardStore = () => {
           <Coins className="w-4 sm:w-5 h-4 sm:h-5 text-accent" />
           <span className="font-bold text-base sm:text-lg">{userTokens}</span>
           <span className="text-muted-foreground text-sm sm:text-base">
-            SPL Available
+            {tokenMetadata?.symbol || 'TKN'} Available
           </span>
         </div>
       </div>
