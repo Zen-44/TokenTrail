@@ -14,7 +14,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFestival } from "@/contexts/FestivalContext";
-import { getTokenBalance } from "@/lib/solana";
+import { getTokenBalance, getTransactionHistory } from "@/lib/solana";
 import { useEffect, useState } from "react";
 import QRCode from "@/components/ui/QRCode";
 
@@ -23,6 +23,7 @@ const Wallet = () => {
   const { walletAddress } = useAuth();
   const { selectedFestival } = useFestival();
   const [balance, setBalance] = useState(0);
+  const [transactions, setTransactions] = useState<any[]>([]);
 
   const fetchBalance = async () => {
     if (walletAddress && selectedFestival?.tokenAddress) {
@@ -35,60 +36,20 @@ const Wallet = () => {
     }
   };
 
+  const fetchTransactions = async () => {
+    if (walletAddress && selectedFestival?.tokenAddress) {
+      const history = await getTransactionHistory(walletAddress, selectedFestival.tokenAddress);
+      setTransactions(history);
+    }
+  };
+
   useEffect(() => {
     if (walletAddress && selectedFestival?.tokenAddress) {
       getTokenBalance(walletAddress, selectedFestival.tokenAddress).then(setBalance);
+      fetchTransactions();
     }
   }, [walletAddress, selectedFestival]);
   
-  const transactions = [
-    {
-      id: "1",
-      type: "earned",
-      amount: 50,
-      description: "Red Bull Wings Challenge",
-      timestamp: "2024-01-15 14:30",
-      txHash: "5KJp...9mF2",
-      status: "confirmed"
-    },
-    {
-      id: "2", 
-      type: "spent",
-      amount: -75,
-      description: "Premium Coffee & Pastry",
-      timestamp: "2024-01-15 12:15",
-      txHash: "8Nx7...4kL9",
-      status: "confirmed"
-    },
-    {
-      id: "3",
-      type: "earned",
-      amount: 200,
-      description: "Nike Air Max Hunt (Bonus)",
-      timestamp: "2024-01-14 18:45",
-      txHash: "2Qm5...7bN3",
-      status: "confirmed"
-    },
-    {
-      id: "4",
-      type: "earned",
-      amount: 75,
-      description: "Samsung Galaxy VR Experience",
-      timestamp: "2024-01-14 16:20",
-      txHash: "7Rt8...1mK6",
-      status: "confirmed"
-    },
-    {
-      id: "5",
-      type: "spent",
-      amount: -300,
-      description: "Limited Edition Festival T-Shirt",
-      timestamp: "2024-01-14 11:00",
-      txHash: "4Hy9...8pL2",
-      status: "confirmed"
-    }
-  ];
-
   const truncateAddress = (address: string | null, startChars = 8, endChars = 8) => {
     if (!address) return "";
     if (address.length <= startChars + endChars) return address;
@@ -239,18 +200,27 @@ const Wallet = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {transactions.map((tx) => (
+            {transactions.map((tx, index) => {
+              const signature = tx.transaction.signatures[0];
+              const blockTime = tx.blockTime ? new Date(tx.blockTime * 1000).toLocaleString() : 'Date not available';
+              const status = tx.meta.err === null ? 'Confirmed' : 'Failed';
+              const preBalance = tx.meta.preTokenBalances?.find((b: any) => b.owner === walletAddress)?.uiTokenAmount.uiAmount || 0;
+              const postBalance = tx.meta.postTokenBalances?.find((b: any) => b.owner === walletAddress)?.uiTokenAmount.uiAmount || 0;
+              const amount = postBalance - preBalance;
+              const type = amount > 0 ? "earned" : "spent";
+
+              return (
               <div
-                key={tx.id}
+                key={index}
                 className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-muted/10 rounded-lg border border-primary/10 hover:border-primary/20 transition-colors gap-3 sm:gap-0 min-w-0 overflow-hidden"
               >
                 <div className="flex items-center gap-3 sm:gap-4 flex-1">
                   <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
-                    tx.type === "earned" 
+                    type === "earned" 
                       ? "bg-green-500/20 text-green-400" 
                       : "bg-red-500/20 text-red-400"
                   }`}>
-                    {tx.type === "earned" ? (
+                    {type === "earned" ? (
                       <ArrowDownLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                     ) : (
                       <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -258,16 +228,16 @@ const Wallet = () => {
                   </div>
                   
                   <div className="flex-1 min-w-0 overflow-hidden">
-                    <div className="font-semibold text-sm sm:text-base truncate">{tx.description}</div>
+                    <div className="font-semibold text-sm sm:text-base truncate">{type === 'earned' ? 'Tokens Received' : 'Tokens Sent'}</div>
                     <div className="text-xs sm:text-sm text-muted-foreground">
-                      <div className="mb-1">{tx.timestamp}</div>
+                      <div className="mb-1">{blockTime}</div>
                       <a 
-                        href={`https://solscan.io/tx/${tx.txHash}?cluster=devnet`}
+                        href={`https://solscan.io/tx/${signature}?cluster=devnet`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:text-primary-glow underline truncate block"
                       >
-                        {tx.txHash}
+                        {signature}
                       </a>
                     </div>
                   </div>
@@ -275,14 +245,14 @@ const Wallet = () => {
                 
                 <div className="text-right sm:ml-4">
                   <div className={`text-base sm:text-lg font-bold ${
-                    tx.type === "earned" ? "text-green-400" : "text-red-400"
+                    type === "earned" ? "text-green-400" : "text-red-400"
                   }`}>
-                    {tx.type === "earned" ? "+" : ""}{tx.amount}
+                    {type === "earned" ? "+" : ""}{amount.toFixed(2)}
                   </div>
                   <div className="text-xs sm:text-sm text-muted-foreground">{selectedFestival?.tokenSymbol || 'SPL'}</div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
           
           <div className="text-center pt-4">

@@ -22,6 +22,7 @@ import { FestivalProvider } from "./contexts/FestivalContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import OrganizerPanel from "./pages/OrganizerPanel";
+import OrganizerFestivalEdit from "./pages/OrganizerFestivalEdit";
 import UserQuestManagement from "./pages/UserQuestManagement";
 import { EditorProvider } from "./contexts/EditorContext";
 import RewardScanner from "./pages/RewardScanner";
@@ -78,6 +79,12 @@ const App = () => (
                 <Route path="/organizer-panel" element={
                   <ProtectedRoute>
                     <DashboardLayout><OrganizerPanel /></DashboardLayout>
+                  </ProtectedRoute>
+                } />
+
+                <Route path="/organizer-panel/festival/edit" element={
+                  <ProtectedRoute>
+                    <DashboardLayout><OrganizerFestivalEdit /></DashboardLayout>
                   </ProtectedRoute>
                 } />
 

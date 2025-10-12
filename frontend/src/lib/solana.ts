@@ -58,3 +58,27 @@ export const getTokenMetadata = async (tokenMintAddress: string): Promise<{ name
         return null;
     }
 };
+
+export const getTransactionHistory = async (walletAddress: string, tokenMintAddress: string): Promise<any[]> => {
+  try {
+    if (!walletAddress || !tokenMintAddress) {
+      return [];
+    }
+    const wallet = new PublicKey(walletAddress);
+    const tokenMint = new PublicKey(tokenMintAddress);
+
+    const associatedTokenAccount = await getAssociatedTokenAddress(tokenMint, wallet);
+
+    const signatures = await connection.getSignaturesForAddress(associatedTokenAccount);
+
+    const transactions = await Promise.all(signatures.map(async (signatureInfo) => {
+      const tx = await connection.getParsedTransaction(signatureInfo.signature, "confirmed");
+      return tx;
+    }));
+
+    return transactions.filter(tx => tx !== null);
+  } catch (error) {
+    console.error('Error fetching transaction history:', error);
+    return [];
+  }
+};

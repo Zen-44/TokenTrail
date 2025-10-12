@@ -523,35 +523,7 @@ const RewardStore = () => {
         </div>
       </div>
 
-      {/* Store Map */}
-      <Card className="gamefi-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" />
-            Store Locations Map
-          </CardTitle>
-          <CardDescription>
-            Find where to claim your rewards across the festival
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="relative bg-gradient-to-br from-muted/20 to-muted/10 rounded-lg h-48 sm:h-64 flex items-center justify-center border border-primary/20">
-            <div className="text-center space-y-2">
-              <ShoppingBag className="w-12 h-12 mx-auto text-primary/50" />
-              <p className="text-muted-foreground">Interactive store map</p>
-              <p className="text-sm text-muted-foreground">
-                Navigate to reward pickup locations
-              </p>
-            </div>
 
-            {/* Mock store pins */}
-            <div className="absolute top-6 left-12 w-4 h-4 bg-accent rounded-full animate-pulse" />
-            <div className="absolute bottom-12 right-16 w-4 h-4 bg-secondary rounded-full animate-pulse" />
-            <div className="absolute top-16 right-12 w-4 h-4 bg-primary rounded-full animate-pulse" />
-            <div className="absolute bottom-6 left-20 w-4 h-4 bg-primary-glow rounded-full animate-pulse" />
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Management Actions */}
       {canManageRewards && (

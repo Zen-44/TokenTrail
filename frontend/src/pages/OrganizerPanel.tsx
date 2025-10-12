@@ -26,18 +26,18 @@ import {
 import { Edit, PlusCircle, Trash } from "lucide-react";
 import { updateFestivalByOrganizer } from "@/lib/organizer-api";
 import { Festival as AdminFestival } from "@/lib/admin-api";
+import { useNavigate } from "react-router-dom";
 
 const OrganizerPanel = () => {
   const { selectedFestival, refreshFestivalData } = useFestival();
   const { walletAddress, isAdmin } = useAuth();
-  const [formData, setFormData] = useState(selectedFestival);
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [quests, setQuests] = useState<Quest[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
 
   useEffect(() => {
-    setFormData(selectedFestival);
     if (selectedFestival) {
       loadQuests();
     }
@@ -121,60 +121,31 @@ const OrganizerPanel = () => {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    if (!formData) return;
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
-  const handleSave = async () => {
-    if (formData) {
-      try {
-        const apiData: AdminFestival = {
-          id: Number(formData.id),
-          festivalName: formData.name,
-          organizerName: formData.organizerName,
-          email: formData.email,
-          phone: formData.phone,
-          location: formData.location,
-          startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
-          endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
-          expectedAttendees: formData.expectedAttendees,
-          sponsorBudget: formData.sponsorBudget,
-          description: formData.description,
-          website: formData.website,
-          tokenName: formData.tokenName,
-          tokenSymbol: formData.tokenSymbol,
-          tokenSupply: formData.tokenSupply,
-          tokenAddress: formData.tokenAddress,
-        };
-
-        await updateFestivalByOrganizer(apiData);
-        toast({
-          title: "Festival Updated",
-          description: "The festival details have been saved.",
-        });
-        refreshFestivalData();
-      } catch (error) {
-        console.error(error);
-        toast({
-          title: "Error",
-          description: "Failed to update festival.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
 
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">
         Organizer Panel for {selectedFestival.name}
       </h1>
+
+      <div className="p-6 border rounded-lg bg-card mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Festival Details</h2>
+          <Button onClick={() => navigate(`/organizer-panel/festival/edit`)}>
+            <Edit className="w-4 h-4 mr-2" />
+            Edit Festival
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><strong>Name:</strong> {selectedFestival.name}</div>
+          <div><strong>Organizer:</strong> {selectedFestival.organizerName}</div>
+          <div><strong>Email:</strong> {selectedFestival.email}</div>
+          <div><strong>Phone:</strong> {selectedFestival.phone}</div>
+          <div><strong>Location:</strong> {selectedFestival.location}</div>
+          <div><strong>Dates:</strong> {new Date(selectedFestival.startDate).toLocaleDateString()} - {new Date(selectedFestival.endDate).toLocaleDateString()}</div>
+        </div>
+      </div>
 
       <div className="p-6 border rounded-lg bg-card">
         <div className="flex justify-between items-center mb-4">
@@ -234,6 +205,7 @@ const OrganizerPanel = () => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveQuest}
       />
+
     </div>
   );
 };

@@ -36,3 +36,62 @@ export async function updateFestivalByOrganizer(festival: AdminFestival): Promis
     throw new Error('Failed to update festival. Please try again.');
   }
 }
+
+/**
+ * Add an editor to a festival
+ */
+export async function getFestivalEditors(festivalId: number): Promise<string[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/editors`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Failed to get editors: ${response.status} ${response.statusText} - ${errorBody}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error getting festival editors:', error);
+    throw new Error('Failed to get editors. Please try again.');
+  }
+}
+
+export async function addFestivalEditor(festivalId: number, wallet: string): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/editors`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ wallet }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Failed to add editor: ${response.status} ${response.statusText} - ${errorBody}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error adding festival editor:', error);
+    throw new Error('Failed to add editor. Please try again.');
+  }
+}
+
+export async function removeFestivalEditor(festivalId: number, editorWallet: string): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/editors/${editorWallet}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Failed to remove editor: ${response.status} ${response.statusText} - ${errorBody}`);
+    }
+  } catch (error) {
+    console.error('Error removing festival editor:', error);
+    throw new Error('Failed to remove editor. Please try again.');
+  }
+}

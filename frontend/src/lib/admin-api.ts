@@ -15,7 +15,18 @@ export interface Festival {
   approved?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  [key: string]: any;
+  editors?: string[];
+  tokenName?: string;
+  tokenSymbol?: string;
+  tokenSupply?: number;
+  tokenAddress?: string;
+  organizerName?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  expectedAttendees?: string;
+  sponsorBudget?: string;
+  wallet?: string;
 }
 
 export interface FestivalsResponse {

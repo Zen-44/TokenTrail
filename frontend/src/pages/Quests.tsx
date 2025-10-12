@@ -437,33 +437,7 @@ const Quests = () => {
         </p>
       </div>
 
-      {/* Interactive Map Placeholder */}
-      <Card className="gamefi-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" />
-            Festival Map
-          </CardTitle>
-          <CardDescription>
-            Explore quest locations across Beach Please Festival
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="relative bg-gradient-to-br from-muted/20 to-muted/10 rounded-lg h-48 sm:h-64 flex items-center justify-center border border-primary/20">
-            <div className="text-center space-y-2">
-              <MapPin className="w-12 h-12 mx-auto text-primary/50" />
-              <p className="text-muted-foreground">Interactive map coming soon</p>
-              <p className="text-sm text-muted-foreground">View quest locations and navigation</p>
-            </div>
-            
-            {/* Mock location pins */}
-            <div className="absolute top-4 left-8 w-3 h-3 bg-primary rounded-full animate-pulse" />
-            <div className="absolute bottom-8 right-12 w-3 h-3 bg-secondary rounded-full animate-pulse" />
-            <div className="absolute top-12 right-8 w-3 h-3 bg-accent rounded-full animate-pulse" />
-            <div className="absolute bottom-4 left-16 w-3 h-3 bg-primary-glow rounded-full animate-pulse" />
-          </div>
-        </CardContent>
-      </Card>
+
 
       {/* Quest List */}
       <div className="grid gap-4 sm:gap-6">
