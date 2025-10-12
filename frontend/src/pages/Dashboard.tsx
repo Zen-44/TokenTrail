@@ -289,7 +289,7 @@ const Dashboard = () => {
                           <p className="text-sm text-muted-foreground">{quest.description}</p>
                         </div>
                         <Badge variant="outline" className="bg-accent/20 text-accent border-accent/50">
-                          {quest.reward} SPL
+                          {quest.reward} {selectedFestival.tokenSymbol}
                         </Badge>
                       </div>
                       <Progress value={progress} className="h-2" />
