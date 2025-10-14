@@ -227,18 +227,21 @@ const Wallet = () => {
                     )}
                   </div>
                   
-                  <div className="flex-1 min-w-0 overflow-hidden">
+                      <div className="flex-1 min-w-0">
                     <div className="font-semibold text-sm sm:text-base truncate">{type === 'earned' ? 'Tokens Received' : 'Tokens Sent'}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">
-                      <div className="mb-1">{blockTime}</div>
-                      <a 
-                        href={`https://solscan.io/tx/${signature}?cluster=devnet`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:text-primary-glow underline truncate block"
-                      >
-                        {signature}
-                      </a>
+                    <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                      <div>{blockTime}</div>
+                      <div className="max-w-[200px] sm:max-w-[300px] lg:max-w-[400px]">
+                        <a 
+                          href={`https://solscan.io/tx/${signature}?cluster=devnet`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary-glow underline block overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          <span className="sm:hidden">{truncateAddress(signature, 8, 8)}</span>
+                          <span className="hidden sm:inline">{signature}</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>

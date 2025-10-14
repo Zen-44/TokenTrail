@@ -214,13 +214,13 @@ const UserQuestManagement = () => {
                             <li key={step.id} className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 {isCompleted ? (
-                                  <CheckCircle className="w-6 h-6 text-yellow-400" />
+                                  <CheckCircle className="w-8 h-8 sm:w-6 sm:h-6 text-yellow-400" />
                                 ) : (
-                                  <div className="w-6 h-6 flex items-center justify-center rounded-full bg-muted text-muted-foreground font-semibold">
+                                  <div className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-muted text-muted-foreground text-lg sm:text-base font-semibold">
                                     {index + 1}
                                   </div>
                                 )}
-                                <span className={isCompleted ? 'line-through text-muted-foreground' : ''}>
+                                <span className={`${isCompleted ? 'line-through text-muted-foreground' : ''} text-base sm:text-sm`}>
                                   {step.title}
                                 </span>
                               </div>

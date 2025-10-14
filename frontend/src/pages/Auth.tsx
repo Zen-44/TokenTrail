@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { API_BASE_URL } from "@/config";
+import { useFestival } from "@/contexts/FestivalContext";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Auth = () => {
   const { toast } = useToast();
   const { login, isAuthenticated } = useAuth();
   const { connect, connected, wallet } = useWallet();
+  const { setSelectedFestival } = useFestival();
   const [isConnecting, setIsConnecting] = useState(false);
 
   // Get the return URL from location state or default to dashboard
@@ -87,12 +89,18 @@ const Auth = () => {
       // Use AuthContext to handle login (this will also connect the wallet adapter)
       await login(token);
 
-      // Success feedback + redirect to intended page
+      // Success feedback
       toast({
         title: "Wallet Connected!",
         description: `Connected as ${walletAddress.substring(0, 6)}...${walletAddress.slice(-4)}`,
       });
-      navigate(from, { replace: true });
+      
+      // Clear any previously selected festival
+      setSelectedFestival(null);
+      localStorage.removeItem('selectedFestivalId');
+      
+      // Navigate to festival selection
+      navigate("/festival-selection", { replace: true });
     } catch (err: any) {
       console.error(err);
       toast({
