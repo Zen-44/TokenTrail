@@ -1,32 +1,50 @@
 # TokenTrail
 
-TokenTrail transforms passive event attendance into an interactive adventure, driving engagement through quests, rewards, and branded experiences. This repository contains the code for the TokenTrail platform, which includes a backend server and a frontend client.
+> **Transform passive event attendance into an interactive adventure.**
 
-## Problem
+TokenTrail drives engagement through quests, rewards, and branded experiences, turning festival "dead time" into active exploration.
 
-- **Low Engagement**: Attendees often experience "dead time" at festivals, leading to boredom and low engagement.
-- **Limited Exploration**: Participants may not explore the full venue or interact with sponsors.
-- **Sponsor Challenges**: Festival organizers and sponsors struggle to keep people actively engaged throughout the event.
+---
 
-## Solution
+## 🎥 Demo
 
-- **Quest-Based Engagement**: TokenTrail is a quest-based platform where attendees complete interactive challenges across the festival grounds.
-- **Rewards System**: Tokens earned from quests can be exchanged for goodies and perks, encouraging ongoing participation.
-- **Branded Opportunities**: Sponsors can design quests and offer branded prizes, ensuring active brand visibility and engagement.
+Check out how TokenTrail works in action:
 
-## Target Audience
+https://github.com/user-attachments/assets/e677f64a-e04e-4417-8785-6960a7afab45
 
-- **Clients**: Festival organizers and sponsors who want to increase attendee satisfaction and engagement.
-- **End Users**: Festival attendees who play quests, earn tokens, and enjoy rewards while discovering more of the festival.
+---
 
-## Project Structure
+## 🧐 Overview
+
+### The Problem
+* **📉 Low Engagement:** Attendees often experience "dead time" at festivals, leading to boredom.
+* **🗺️ Limited Exploration:** Participants may not explore the full venue or interact with sponsors.
+* **🥱 Sponsor Challenges:** Organizers struggle to keep people actively engaged with brands throughout the event.
+
+### The Solution
+* **⚔️ Quest-Based Engagement:** A platform where attendees complete interactive challenges across festival grounds.
+* **🎁 Rewards System:** Tokens earned from quests can be exchanged for goodies and perks.
+* **📢 Branded Opportunities:** Sponsors design quests to ensure active brand visibility.
+
+---
+
+## 👥 Target Audience
+
+| Audience | Benefit |
+| :--- | :--- |
+| **Clients** | Festival organizers and sponsors looking to increase attendee satisfaction and ROI. |
+| **End Users** | Attendees who want to play quests, earn tokens, and discover more of the festival. |
+
+---
+
+## 🏗️ Project Structure
 
 The project is organized into two main directories:
 
-- **`backend`**: Contains the Node.js server, which handles business logic, database interactions, and API endpoints.
-- **`frontend`**: Contains the React-based client application that users interact with.
+### 1. Backend (`/backend`)
+Contains the **Node.js** server, handling business logic, database interactions, and API endpoints.
+* [View Backend Documentation](./backend/README.md)
 
-For detailed instructions on how to set up and run each part of the project, please refer to the README files in their respective directories:
-
-- [Backend README](./backend/README.md)
-- [Frontend README](./frontend/README.md)
+### 2. Frontend (`/frontend`)
+Contains the **React** client application that users interact with.
+* [View Frontend Documentation](./frontend/README.md)
